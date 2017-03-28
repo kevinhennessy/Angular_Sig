@@ -1,0 +1,27 @@
+# Angular Study Group
+**Presenters**: Kumanan Murugesan, David Wilson, Kip Streithorst, Derick Linkous, and Kevin Hennessy
+
+**Book for the Study** – [Angular 2 By Example](https://www.amazon.com/Angular-2-Example-Chandermani-Arora/dp/178588719X/ref=sr_1_1?ie=UTF8&qid=1490667982&sr=8-1&keywords=angular+2+by+example)
+
+**Duration** – 4 sessions
+
+**First Session – April 5 - Chapter 1**
+- TypeScript Intro 
+- Getting Started
+
+**Second Session – April 19 - Chapter 4**
+- Routing 
+  - Essentials
+  - Child Routing, Lazy Loading
+- Forms
+  - Template Driven Forms
+  - Model Driven Forms
+  
+**Third Session – May 3 - Chapter 5**
+- Dependency Injection
+- HTTP Module and RxJs 
+
+**Fourth Session – May 17 - Chapter 7**
+- Unit Testing
+- Using fakes/mocks in unit testing
+- E2E Testing Using CLI

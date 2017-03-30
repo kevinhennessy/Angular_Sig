@@ -1,5 +1,5 @@
 # Angular Study Group
-**Presenters**: Kumanan Murugesan, David Wilson, Kip Streithorst, Derick Linkous, and Kevin Hennessy
+**Presenters**: Kumanan Murugesan, David Wilson, Derick Linkous, and Kevin Hennessy
 
 **Book for the Study** – [Angular 2 By Example](https://www.amazon.com/Angular-2-Example-Chandermani-Arora/dp/178588719X/ref=sr_1_1?ie=UTF8&qid=1490667982&sr=8-1&keywords=angular+2+by+example)
 

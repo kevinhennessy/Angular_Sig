@@ -1,6 +1,6 @@
 # Session 1 - TypeScript Intro, Getting Started
 
-Slides for the session can be found at
+Slides for the session can be found at [/http://kevinhennessy.github.io/angular2/](http://kevinhennessy.github.io/angular2/)
 
 The repository for the book chapter is located at [https://github.com/chandermani/angular2byexample/tree/checkpoint1.1](https://github.com/chandermani/angular2byexample/tree/checkpoint1.1)
 

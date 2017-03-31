@@ -7,7 +7,7 @@
 
 **Duration** – 4 sessions
 
-**First Session – April 5 - Chapter 1**
+**[First Session](https://github.com/kevinhennessy/Angular_Sig/tree/master/Session%201) – April 5 - Chapter 1**
 - TypeScript Intro 
 - Getting Started
 

@@ -1,4 +1,4 @@
-# Session 1 - TypeScript Intro, Getting Started
+# Session 2 - TypeScript Intro, Getting Started
 
 Slides for the session can be found at [kevinhennessy.github.io/angular2/](http://kevinhennessy.github.io/angular2/)
 

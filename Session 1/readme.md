@@ -185,5 +185,5 @@ ng serve
 * Navigate to http://localhost:4200/
 ## Homework
 * Read Chapter 4
-* Grab the [repo for Checkpoint 3.1](https://github.com/chandermani/angular2byexample/tree/checkpoint3.1/trainer)
+* Grab the [repo for Checkpoint 4.1](https://github.com/chandermani/angular2byexample/tree/checkpoint3.1/trainer)
 * Get Personal Trainer set up and running -- see the [readme](https://github.com/chandermani/angular2byexample/tree/checkpoint3.1/trainer)  in the trainer directory

@@ -1,4 +1,4 @@
-# Session 2 - TypeScript Intro, Getting Started
+# Session 2 - Routing, Forms
 
 Slides for the session can be found at [kevinhennessy.github.io/angular2/Session2](http://kevinhennessy.github.io/angular2/Session2)
 

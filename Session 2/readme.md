@@ -5,6 +5,23 @@ Slides for the session can be found at [kevinhennessy.github.io/angular2/Session
 In this session we will be working with a series of checkpoints for Chapter 4 of the book.The starting repository for the book chapter Checkpoint 4.1 which is located at [github.com/chandermani/angular2byexample/tree/checkpoint4.1](https://github.com/chandermani/angular2byexample/tree/checkpoint4.1). 
 
 ## Pre-reqs
-This session assumes you have read chapter 4 of the book and are up and running with checkpoint 4.1 in the GitHub repository.
+This session assumes you have read chapter 4 of the book.
 
-
+## Getting set up with Personal Trainer
+[David]
+## Routing
+### Essentials
+[David]
+### Child Routing
+[Kevin]
+### Lazy Loading
+[Kevin]
+## Forms
+### Template Driven Forms
+[Kumanan]
+### Model Driven Forms
+[Kevin]
+### Homework
+* Read Chapter 5
+* Grab the repo for Checkpoint 5.1
+* Sign up for a Mongo Lab account 

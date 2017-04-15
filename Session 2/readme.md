@@ -215,7 +215,7 @@ ngOnInit():any{
     this.buildExerciseForm(); 
 } 
 ```
-*Now let’s implement the buildExerciseForm method by adding the following code:
+* Now let’s implement the buildExerciseForm method by adding the following code:
 ```javascript 
 buildExerciseForm(){ 
     this.exerciseForm = this.formBuilder.group({ 
@@ -240,42 +240,8 @@ addVideoArray(){
     return this.videoArray; 
 }
 ```
-#### Adding the Form Model to our HTML View
-Copy in the code for exercise.component.html from checkpoint 4.6.
-Notice the form tag: 
-```javascript
-<form [formGroup]="exerciseForm" (ngSubmit)="onSubmit(exerciseForm)" novalidate>
-```
-#### Adding Form Controls to our Form inputs
-```javascript
-<input name="name" formControlName="name" class="form-control" id="name" placeholder="Enter exercise name. Must be unique.">  
-``` 
-#### Adding Validation
-```javascript
-<label *ngIf="exerciseForm.controls.name.hasError('required') && (exerciseForm.controls.name.touched || submitted)" class="alert alert-danger validation-message">Name is required</label> 
-```
-### Adding Dynamic Form Controls
-We first use ngFor to loop through our list of videos. Then we add assign the index in our videos to a local variable i. No surprises so far.
-```javascript  
-<div *ngFor="let video of videoArray.controls; let i=index" class="form-group">
-```  
-Inside the loop we do three things. First, we add a button to allow the user to delete a video:
-```javascript 
-<button type="button" (click)="deleteVideo(i)" title="Delete this video." class="btn alert-danger pull-right"> 
-    <span class="glyphicon glyphicon-trash text-danger"></span> 
-</button>
-```  
-We bind a deleteVideo method in our component class to the button’s click event and pass it the index of the video being deleted. 
-Next we dynamically add a video input field for each of the videos currently in our exercise:
-```javascript 
-<input type="text" class="form-control" [formControlName]="i" placeholder="Add a related youtube video identified."/>
-``` 
-We then add a validation message for each of the video input fields
-```javascript 
-<label *ngIf="exerciseForm.controls['videos'].controls[i].hasError('required') && (exerciseForm.controls['videos'].controls[i].touched || submitted)" class="alert alert-danger validation-message">Video identifier is required</label>
-```
 #### Saving the form
-we bound the ngSubmit event to the following onSubmit method in our code:
+* Add the following onSubmit method in our code:
 ```javascript 
 onSubmit(formExercise:FormGroup){ 
     this.submitted = true; 
@@ -285,7 +251,7 @@ onSubmit(formExercise:FormGroup){
     this.router.navigate(['/builder/exercises']); 
 } 
 ``` 
-then it calls the following mapFormValues method, which assigns the values from our form to the exercise that will be saved:
+* Finally add the following method, which assigns the values from our form to the exercise that will be saved:
 ```javascript 
 mapFormValues(form: FormGroup){ 
     this.exercise.name = form.controls['name'].value; 
@@ -298,7 +264,7 @@ mapFormValues(form: FormGroup){
 } 
 ```
 #### Custom validators
-So let’s start by adding a TypeScript file with the name alphanumeric-validator.ts. In that file first import FormControl from @angular/forms, then add the following class to that file:
+Add a TypeScript file with the name alphanumeric-validator.ts. In that file first import FormControl from @angular/forms, then add the following class to that file:
 ```javascript 
 export class AlphaNumericValidator { 
     static invalidAlphaNumeric(control: FormControl):{ [key:string]:boolean } { 
@@ -309,9 +275,11 @@ export class AlphaNumericValidator {
     } 
 } 
 ```
-Open workout.component.html and add the following label just below the label that displays the message for the required validator:
-```javascript
-<label *ngIf="exerciseForm.controls.name.hasError('invalidAlphaNumeric') && (exerciseForm.controls.name.touched || submitted)" class="alert alert-danger validation-message">Name must be alphanumeric</label>
+#### Adding the Form Model to our HTML View
+Copy in the code for exercise.component.html from checkpoint 4.6.
+
+
+
 ```  
 ### Homework
 * Read Chapter 5

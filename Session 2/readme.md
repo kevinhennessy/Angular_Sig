@@ -19,7 +19,6 @@ which introduces the following:
 * Personal trainer layout
 * Adding skeleton files for each component
 * Personal trainer navigation with routes
-* Code changes:
 ### Child Routing
 In this section we'll be adding the code for child routes. The finished version is at Checkpoint 4.2
 #### Adding the child routing component
@@ -229,7 +228,7 @@ buildExerciseForm(){
     }) 
 }
 ```
-* to construct this new FormArray, add the following addVideoArray method to our class:
+* To construct this new FormArray, add the following addVideoArray method to our class:
 ```javascript 
 addVideoArray(){ 
     if(this.exercise.videos){ 
@@ -278,9 +277,6 @@ export class AlphaNumericValidator {
 #### Adding the Form Model to our HTML View
 Copy in the code for exercise.component.html from checkpoint 4.6.
 
-
-
-```  
 ### Homework
 * Read Chapter 5
 * Grab the repo for Checkpoint 5.1

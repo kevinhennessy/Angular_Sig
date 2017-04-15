@@ -114,7 +114,7 @@ import { workoutBuilderRouting } from './workout-builder.routes';
 
 #### Updating app.routes to remove the workout builder component and its route from that file.
 Finally, go back to app.routes.ts and remove the import of the WorkoutBuilderComponent and its route.
-### Lazy Loading
+### Lazy Loading of Routes
 In this section we'll be adding the code for lazy loading. The finished version is at Checkpoint 4.3.
 * First, modify app.routes.ts to add the following separate route configuration under the existing imports:
 ```javascript
@@ -146,6 +146,21 @@ export const workoutBuilderRoutes: Routes = [
 ];
 ```
 * Finally go back to the app-module.ts and remove the WorkoutBuilderModule import in the @NgModule configuration in that file.
+### Implementing Sub and Side Level Navigation
+We'll review the code in Checkpoint 4.3
+### Implementing workout and exercise lists
+We'll review the code in Checkpoint 4.4
+* Workout Service
+* Workout and exercise list components
+* Workout and exercist list views
+### Building a Workout
+We'll review the relevant code in Checkpoint 4.5
+* Finishing left nav
+* Adding Workout Builder Service
+* Adding exercises using ExerciseNav
+* Route parameters
+* Route guards
+* Implement the Workout Component
 ## Forms
 ### Template Driven Forms
 [Kumanan]

@@ -11,7 +11,7 @@
 - TypeScript Intro 
 - Getting Started
 
-**Second Session – April 19 - Chapter 4**
+**[Second Session](https://github.com/kevinhennessy/Angular_Sig/tree/master/Session%202) – April 19 - Chapter 4**
 - Routing 
   - Essentials
   - Child Routing, Lazy Loading

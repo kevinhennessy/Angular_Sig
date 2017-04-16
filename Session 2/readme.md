@@ -24,6 +24,9 @@ $ git checkout checkpoint4.1
 
 $ gulp play
 ```
+
+Now open the application folder in your favorite javascript editor (VS Code, Sublime, Atom, WebStorm, etc)
+
 ### Personal Trainer
 7 Minute Workout is an exercise/workout plan that requires us to perform a set of twelve exercises in quick succession within the seven minute time span. 7 Minute Workout has become quite popular due to its benefits and the short duration of the workout. We cannot confirm or refute the claims but doing any form of strenuous physical activity is better than doing nothing at all. If you are interested to know more about the workout, then check out [http://well.blogs.nytimes.com/2013/05/09/the-scientific-7-minute-workout/](http://well.blogs.nytimes.com/2013/05/09/the-scientific-7-minute-workout/).
 
@@ -43,7 +46,34 @@ The application is organized based on the Angular style guidelines:
 ### 
 ## Routing
 ### Essentials
-[David]
+Angular supports SPA development using its routing infrastructure. This infrastructure tracks browser URLs, enables hyperlink generation, exposes routing events, and provides a set of directives/components for view.
+
+There are four major framework pieces that work together to support the Angular routing infrastructure:
+
+- **The Router (Router)**: The primary infrastructure piece that actually provides component navigation.
+- **Routing configuration (Route)**: The component router is dependent upon the routing configuration for setting up routes.
+- **RouterOutlet component**: The RouterOutlet component is the placeholder container (host) where route-specific views are loaded.
+- **RouterLink directive**: This generates hyperlinks that can be embedded in the anchor tags for navigation
+
+We setup routing in our application by making the following changes:
+
+- package.json
+    - @angular/router is added to provide routing capabilites.
+- systemjs.config.js 
+    - Update SystemJS to load the router module.
+- index.html 
+    - Add base html tag so ng routing will know the root of the site.
+- app.routes.ts 
+    - Route configuration for the app.
+    - A path with ** denotes a catch-all path or the wildcard route for the app.
+- app.component.ts
+    - Template needs to contain \<router-outlet>\</router-outlet>
+    - RouterOutlet is an Angular component directive that acts as a placeholder for a child component to load on route change. It integrates with the router to load the appropriate component based on the current browser URL and the route definition.
+- start.html 
+    - Add a link to the workout route.  Notice the routeLink property binding.  This is used throughout the application.  The start template is just one example.
+- workout-runner.component.ts 
+    - Navigates programatically using the router service: this.router.navigate( ['/finish'] );
+    
 ### Getting Started
 In this section, we will be starting with Checkpoint 4.1
 which introduces the following:

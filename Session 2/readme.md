@@ -146,21 +146,117 @@ export const workoutBuilderRoutes: Routes = [
 ];
 ```
 * Finally go back to the app-module.ts and remove the WorkoutBuilderModule import in the @NgModule configuration in that file.
-### Implementing Sub and Side Level Navigation
-We'll review the code in Checkpoint 4.3
+### Integrating Sub and Side Level Navigation
+The finished code for this section is in Checkpoint 4.3
+#### Sub-level navigation
+* Open the sub-nav.component.html file and change the HTML in it to the following:
+```javascript 
+<div> 
+    <a [routerLink]="['/builder/workouts']" class="btn btn-primary"> 
+        <span class="glyphicon glyphicon-home"></span> Home 
+    </a> 
+    <a [routerLink]="['/builder/workout/new']" class="btn btn-primary"> 
+        <span class="glyphicon glyphicon-plus"></span> New Workout 
+    </a> 
+    <a [routerLink]="['/builder/exercise/new']" class="btn btn-primary"> 
+        <span class="glyphicon glyphicon-plus"></span> New Exercise 
+    </a>
+</div>
+``` 
+#### Side Navigation
+The component based nature of Angular gives us an easy way to implement these context-sensitive menus.  We can define new components for each of the menus and then import them into the components that need them.  In this case, we have three components that will need side menus – Workouts, Exercises, and Workout.
+
+We already have files for the two menu components including template files and have imported them into the WorkoutBuilderModule.  We will now integrate these into the components that need them.   
+* First, modify the template – workouts.component.html – to add the selector for the menu 
+```javascript
+<div class="container-fluid"> 
+    <div id="content-container" class="row"> 
+        <left-nav-main></left-nav-main> 
+        <h1 class="text-center">Workouts</h1> 
+    </div> 
+</div>
+``` 
+* Then replace the placeholder text in the left-nav-main.component.html with the navigation links to the WorkoutsComponent and ExercisesComponent:
+```javascript 
+<div class="col-sm-2 left-nav-bar"> 
+    <div class="list-group"> 
+        <a [routerLink]="['/builder/workouts']" class="list-group-item list-group-item-info">Workouts</a> 
+        <a [routerLink]="['/builder/exercises']" class="list-group-item list-group-item-info">Exercises</a> 
+    </div> 
+</div> 
+```
+* Follow the exact same steps to complete the side menu for the Exercises component. 
+We won’t show the code for doing these two menus here but you can find it in the workout-builder/exercises folder under trainer/src/components in checkpoint 4.3 of the GitHub repository. 
+* For the menu for the Workout screen, the steps are the same except that you should change the left-nav-exercises.component.html to the following: 
+```javascript
+<div class="col-sm-2 left-nav-bar"> 
+    <h3>Exercises</h3> 
+</div>
+``` 
+We will use this template as the starting point for building out a list of exercises that will appear on the left-hand side of the screen and can be selected for inclusion in a workout. 
+
 ### Implementing workout and exercise lists
-We'll review the code in Checkpoint 4.4
-* Workout Service
-* Workout and exercise list components
-* Workout and exercist list views
+We'll review the code in Checkpoint 4.4. Be sure and update app.css that is found in the repository.
+#### Workout Service
+* Locate workout-service.ts in the trainer/src/services folder. The code in that file should look like the following except for the implementation of the two methods setupInitialExercises and setupInitialWorkouts, which we have left out because of their length.
+```javascript
+import {Injectable} from '@angular/core'; 
+import {ExercisePlan} from './model'; 
+import {WorkoutPlan} from './model'; 
+import {Exercise} from "./model"; 
+ 
+@Injectable() 
+export class WorkoutService { 
+    workouts: Array<WorkoutPlan> = []; 
+    exercises: Array<Exercise> = []; 
+ 
+    constructor() { 
+        this.setupInitialExercises(); 
+        this.setupInitialWorkouts(); 
+    } 
+ 
+    getExercises(){ 
+        return this.exercises; 
+    } 
+ 
+    getWorkouts(){ 
+        return this.workouts; 
+    } 
+    setupInitialExercises(){ 
+ // implementation of in-memory store. 
+    } 
+ 
+    setupInitialWorkouts(){ 
+ // implementation of in-memory store. 
+    } 
+}} 
+```
+Open services.module.ts in the same folder and then import the workout-service and add it as a provider:
+```javascript
+---- other imports ---- 
+import { WorkoutService } from "./workout-service"; 
+ 
+@NgModule({ 
+    imports: [], 
+    declarations: [], 
+    providers: [ 
+        LocalStorage, 
+        WorkoutHistoryTracker, 
+        WorkoutService], 
+})
+``` 
+This registers the WorkoutService as a provider with Angular’s Dependency Injection framework. 
+
+#### Workout and exercise list components
+#### Workout and exercist list views
 ### Building a Workout
 We'll review the relevant code in Checkpoint 4.5
-* Finishing left nav
-* Adding Workout Builder Service
-* Adding exercises using ExerciseNav
-* Route parameters
-* Route guards
-* Implement the Workout Component
+#### Finishing left nav
+#### Adding Workout Builder Service
+#### Adding exercises using ExerciseNav
+#### Route parameters
+#### Route guards
+#### Implement the Workout Component
 ## Forms
 ### Template Driven Forms
 [Kumanan]

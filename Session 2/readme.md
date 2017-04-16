@@ -318,9 +318,9 @@ import { Router } from '@angular/router';
 import { WorkoutPlan } from "../../../services/model"; 
 import { WorkoutService } from "../../../services/workout-service";
 ```
-```javascript 
 This new code imports OnInit from Angular core as well as the Router, WorkoutService and the WorkoutPlan type . 
-Next replace the class definition with the following code: 
+Next replace the class definition with the following code:
+```javascript  
 export class WorkoutsComponent implements OnInit { 
     workoutList:Array<WorkoutPlan> = []; 
  

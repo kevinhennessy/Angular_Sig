@@ -148,7 +148,106 @@ export const workoutBuilderRoutes: Routes = [
 ```
 * Finally go back to the app-module.ts and remove the WorkoutBuilderModule import in the @NgModule configuration in that file.
 ## Forms
+
+
+
 ### Template Driven Forms
+In this section, we will be starting with Checkpoint 4.5
+
+which introduces the following:
+* Steps to convert a normal html5 form to an angular form
+* FormsModule
+* NgForms Directive
+* NgModel Directive
+* Validations
+
+### Template Driven Forms - Features
+* Developing the Form in the html template using NgForms and NgModel directives.
+* Validation logic is handled in the html form using some NgModel and angular css classes.
+* Two way databinding is enabled so that the model(component.ts) and the html form elements are always in sync.
+* Default form submission can be supressed and a special NgSubmit event handler is bound to the component function.
+
+### Step1: Go to the checkpoint4.5 or you can download zip  file from [GitHub](https://github.com/chandermani/angular2byexample/archive/checkpoint4.5.zip) 
+
+### Step2: Import angular forms module.
+```javascript
+//open the systemjs.config.js file in the trainer folder 
+//and add forms module
+var ngPackageNames = [ 
+    'common', 
+    'compiler', 
+    'core', 
+    'forms',   
+    'http', 
+    'platform-browser', 
+    'platform-browser-dynamic', 
+    'router', 
+    'testing' 
+  ]; 
+```
+
+### Step3: import the forms module in the your component module.
+
+>In our lab today, open workout-builder.module.ts in trainer/src/components/workout-builder folder and refer the forms module.
+
+```javascript
+//
+@NgModule({
+    imports: [ 
+        CommonModule, 
+        FormsModule, //forms module reference
+        SharedModule, 
+        workoutBuilderRouting 
+    ]
+});
+
+// Once this is refereed, all components in this module can have access to forms directives.
+``` 
+> We will be using the NgForm and ngModel directives in the html templates.
+
+### Using NgForm
+``` html
+<form #f="ngForm" (ngSubmit)="save(f.form)" novalidate>
+
+</form>
+```
+> #f - template reference variable.
+> 
+> novalidate - disables the default form submit behavior
+> 
+>(ngSubmit) - form submit handler - calls the save method in the compoenent.
+
+### ngModel
+* Fundamental directive in forms module.
+* Supports two data binding.
+* Manages the state of the form like valid/invalid.
+
+> Open workout-component.html and look for ngModel.
+>
+> It is applied only to input elements.
+
+```html
+<input name="workoutName" id="workout-name" [(ngModel)]="workout.name"> 
+```
+> look for **[()]** - Two way databinding 
+
+### To check two way databinding,
+#### 
+
+Add the interpolation to next to the input tag.
+
+```html
+<input name="workoutName" id="workout-name" [(ngModel)]="workout.name"> 
+{{workout.name}}
+```
+
+### Validation: 
+* required
+* min
+* max
+* pattern
+
+
 [Kumanan]
 ### Model Driven Forms
 [Kevin]

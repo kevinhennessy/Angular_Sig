@@ -10,7 +10,7 @@ This session assumes you have read chapter 4 of the book.
 ## Getting set up with Personal Trainer
 
 ### Project Setup
-In your favorite local folder clone the application, install gulp, install packages, checkout the starting branch, and run the app:
+Make sure you have git installed and in your favorite local folder: clone the source repository, install gulp, install packages, checkout the starting branch, and run the app:
 ```
 $ git clone https://github.com/chandermani/angular2byexample.git
 
@@ -25,7 +25,21 @@ $ git checkout checkpoint4.1
 $ gulp play
 ```
 
-Now open the application folder in your favorite javascript editor (VS Code, Sublime, Atom, WebStorm, etc)
+Now open the application folder in your favorite javascript editor (VS Code, Sublime, Atom, WebStorm, etc).
+
+**Tip: It is strongly encouraged for you to use git to pull the application code to your local workstation.**  
+This will make it much easier to track your changes, move between checkpoints, and restart if necessary.  However, if you don't have git installed you can pull down the code base as a zip file:
+[https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip](https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip)  &leftarrow; You can substitute a given checkpoint number in the URL to download the corresponding zip file.
+
+### Using git Branches for Checkpoints
+The code in the source repository progresses through the exercises outlined in the book using git branches.  As we proceed through these exercises below we will use these branches walk through different steps in the process.  If you get behind or can't get one section working, you can always catch up by moving to the next branch.  As shown above you can move to a new branch using the git checkout command.  Ex:
+```
+$ git checkout checkpoint4.1
+```
+
+During this presentation we will be working with checkpoints between 4.1 and 4.6.
+
+### Use of Gulp for builds
 
 ### Personal Trainer
 7 Minute Workout is an exercise/workout plan that requires us to perform a set of twelve exercises in quick succession within the seven minute time span. 7 Minute Workout has become quite popular due to its benefits and the short duration of the workout. We cannot confirm or refute the claims but doing any form of strenuous physical activity is better than doing nothing at all. If you are interested to know more about the workout, then check out [http://well.blogs.nytimes.com/2013/05/09/the-scientific-7-minute-workout/](http://well.blogs.nytimes.com/2013/05/09/the-scientific-7-minute-workout/).
@@ -42,6 +56,11 @@ The application is organized based on the Angular style guidelines:
             - shared services
         - static
             - static files (styles, images, audio)
+
+### Use of Gulp for builds
+Gulp is used in the book and this presentation as a rudimentary build system for our application.  It provides a build pipeline which coordinates the typescript transpilation, startup of the web server, and live reloading.  This is a very simple build pipeline and is used only to facilitate the learning of Angular concepts.  A detailed discussion of the build pipeline is outside the scope of this presentation.  There are a myriad of choices for setting up Angular 2 build pipelines and you would likely want to use something different in your production application.  Here is more information about available tools and recommendataions from the Angular team:
+
+[https://angular.io/docs/ts/latest/guide/deployment.html](https://angular.io/docs/ts/latest/guide/deployment.html)
 
 ### 
 ## Routing

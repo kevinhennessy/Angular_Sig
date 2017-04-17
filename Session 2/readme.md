@@ -531,7 +531,7 @@ var ngPackageNames = [
     'common', 
     'compiler', 
     'core', 
-    'forms',   
+    'forms',   //forms module import.
     'http', 
     'platform-browser', 
     'platform-browser-dynamic', 
@@ -549,7 +549,7 @@ var ngPackageNames = [
 @NgModule({
     imports: [ 
         CommonModule, 
-        FormsModule, //forms module reference
+        FormsModule, //forms module reference for Template Driven forms.
         SharedModule, 
         workoutBuilderRouting 
     ]
@@ -595,11 +595,27 @@ Add the interpolation to next to the input tag.
 {{workout.name}}
 ```
 
-### Validation: 
+### Validation: ngModel is the main directive that is used to implement validation
+
+#### Out of box validations supported by angular.
 * required
 * min
 * max
 * pattern
+
+### To get started with validation, assign a local variable to ngModel and add required attribute
+```html
+<input #name="ngModel" name="workoutName" id="workout-name" 
+[(ngModel)]="workout.name" required> 
+{{workout.name}}
+```
+> Look for **#name** - local variable.
+>
+> Look for **required**
+
+### How to check the state
+
+
 
 
 [Kumanan]

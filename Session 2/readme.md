@@ -29,17 +29,15 @@ Now open the application folder in your favorite javascript editor (VS Code, Sub
 
 **Tip: It is strongly encouraged for you to use git to pull the application code to your local workstation.**  
 This will make it much easier to track your changes, move between checkpoints, and restart if necessary.  However, if you don't have git installed you can pull down the code base as a zip file:
-[https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip](https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip)  &leftarrow; You can substitute a given checkpoint number in the URL to download the corresponding zip file.
+[https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip](https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip) &leftarrow; **Substitute any checkpoint number**
 
 ### Using git Branches for Checkpoints
-The code in the source repository progresses through the exercises outlined in the book using git branches.  As we proceed through these exercises below we will use these branches walk through different steps in the process.  If you get behind or can't get one section working, you can always catch up by moving to the next branch.  As shown above you can move to a new branch using the git checkout command.  Ex:
+The code in the source repository progresses through the exercises outlined in the book using git branches.  As we proceed through these exercises below we will use these branches walk through different steps in the process.  If you get behind or can't get one section working, you can always catch up by moving to the next branch.  As shown above you can move to a new branch using the git checkout command. 
 ```
 $ git checkout checkpoint4.1
 ```
 
 During this presentation we will be working with checkpoints between 4.1 and 4.6.
-
-### Use of Gulp for builds
 
 ### Personal Trainer
 7 Minute Workout is an exercise/workout plan that requires us to perform a set of twelve exercises in quick succession within the seven minute time span. 7 Minute Workout has become quite popular due to its benefits and the short duration of the workout. We cannot confirm or refute the claims but doing any form of strenuous physical activity is better than doing nothing at all. If you are interested to know more about the workout, then check out [http://well.blogs.nytimes.com/2013/05/09/the-scientific-7-minute-workout/](http://well.blogs.nytimes.com/2013/05/09/the-scientific-7-minute-workout/).

@@ -27,7 +27,7 @@ $ gulp play
 
 Now open the application folder in your favorite javascript editor (VS Code, Sublime, Atom, WebStorm, etc).
 
-**Tip: It is strongly encouraged for you to use git to pull the application code to your local workstation.**  
+> **Tip: It is strongly encouraged for you to use git to pull the application code to your local workstation.**  
 This will make it much easier to track your changes, move between checkpoints, and restart if necessary.  However, if you don't have git installed you can pull down the code base as a zip file:
 [https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip](https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip) &leftarrow; **Substitute any checkpoint number**
 

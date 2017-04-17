@@ -227,23 +227,416 @@ export const workoutBuilderRoutes: Routes = [
 ];
 ```
 * Finally go back to the app-module.ts and remove the WorkoutBuilderModule import in the @NgModule configuration in that file.
-### Implementing Sub and Side Level Navigation
-We'll review the code in Checkpoint 4.3
+
+### Integrating Sub and Side Level Navigation
+The finished code for this section is in Checkpoint 4.3
+#### Sub-level navigation
+* Open the sub-nav.component.html file and change the HTML in it to the following:
+```javascript 
+<div> 
+    <a [routerLink]="['/builder/workouts']" class="btn btn-primary"> 
+        <span class="glyphicon glyphicon-home"></span> Home 
+    </a> 
+    <a [routerLink]="['/builder/workout/new']" class="btn btn-primary"> 
+        <span class="glyphicon glyphicon-plus"></span> New Workout 
+    </a> 
+    <a [routerLink]="['/builder/exercise/new']" class="btn btn-primary"> 
+        <span class="glyphicon glyphicon-plus"></span> New Exercise 
+    </a>
+</div>
+``` 
+#### Side Navigation
+The component based nature of Angular gives us an easy way to implement these context-sensitive menus.  We can define new components for each of the menus and then import them into the components that need them.  In this case, we have three components that will need side menus – Workouts, Exercises, and Workout.
+
+We already have files for the two menu components including template files and have imported them into the WorkoutBuilderModule.  We will now integrate these into the components that need them.   
+* First, modify the template – workouts.component.html – to add the selector for the menu 
+```javascript
+<div class="container-fluid"> 
+    <div id="content-container" class="row"> 
+        <left-nav-main></left-nav-main> 
+        <h1 class="text-center">Workouts</h1> 
+    </div> 
+</div>
+``` 
+* Then replace the placeholder text in the left-nav-main.component.html with the navigation links to the WorkoutsComponent and ExercisesComponent:
+```javascript 
+<div class="col-sm-2 left-nav-bar"> 
+    <div class="list-group"> 
+        <a [routerLink]="['/builder/workouts']" class="list-group-item list-group-item-info">Workouts</a> 
+        <a [routerLink]="['/builder/exercises']" class="list-group-item list-group-item-info">Exercises</a> 
+    </div> 
+</div> 
+```
+* Follow the exact same steps to complete the side menu for the Exercises component. 
+We won’t show the code for doing these two menus here but you can find it in the workout-builder/exercises folder under trainer/src/components in checkpoint 4.3 of the GitHub repository. 
+* For the menu for the Workout screen, the steps are the same except that you should change the left-nav-exercises.component.html to the following: 
+```javascript
+<div class="col-sm-2 left-nav-bar"> 
+    <h3>Exercises</h3> 
+</div>
+``` 
+We will use this template as the starting point for building out a list of exercises that will appear on the left-hand side of the screen and can be selected for inclusion in a workout. 
+
 ### Implementing workout and exercise lists
-We'll review the code in Checkpoint 4.4
-* Workout Service
-* Workout and exercise list components
-* Workout and exercist list views
+The finished code for this section is in Checkpoint 4.4. Be sure and update app.css that is found in the repository.
+#### Workout Service
+* Locate workout-service.ts in the trainer/src/services folder. The code in that file should look like the following except for the implementation of the two methods setupInitialExercises and setupInitialWorkouts, which we have left out because of their length.
+```javascript
+import {Injectable} from '@angular/core'; 
+import {ExercisePlan} from './model'; 
+import {WorkoutPlan} from './model'; 
+import {Exercise} from "./model"; 
+ 
+@Injectable() 
+export class WorkoutService { 
+    workouts: Array<WorkoutPlan> = []; 
+    exercises: Array<Exercise> = []; 
+ 
+    constructor() { 
+        this.setupInitialExercises(); 
+        this.setupInitialWorkouts(); 
+    } 
+ 
+    getExercises(){ 
+        return this.exercises; 
+    } 
+ 
+    getWorkouts(){ 
+        return this.workouts; 
+    } 
+    setupInitialExercises(){ 
+ // implementation of in-memory store. 
+    } 
+ 
+    setupInitialWorkouts(){ 
+ // implementation of in-memory store. 
+    } 
+}} 
+```
+Open services.module.ts in the same folder and then import the workout-service and add it as a provider:
+```javascript
+---- other imports ---- 
+import { WorkoutService } from "./workout-service"; 
+ 
+@NgModule({ 
+    imports: [], 
+    declarations: [], 
+    providers: [ 
+        LocalStorage, 
+        WorkoutHistoryTracker, 
+        WorkoutService], 
+})
+``` 
+This registers the WorkoutService as a provider with Angular’s Dependency Injection framework. 
+
+#### Workout and exercise list components
+First, open the workouts.component.ts file in the trainer/src/components/workout-builder/workouts folder and update the imports as follows: 
+```javascript
+import { Component, OnInit} from '@angular/core'; 
+import { Router } from '@angular/router'; 
+ 
+import { WorkoutPlan } from "../../../services/model"; 
+import { WorkoutService } from "../../../services/workout-service";
+```
+This new code imports OnInit from Angular core as well as the Router, WorkoutService and the WorkoutPlan type . 
+Next replace the class definition with the following code:
+```javascript  
+export class WorkoutsComponent implements OnInit { 
+    workoutList:Array<WorkoutPlan> = []; 
+ 
+    constructor( 
+        public router:Router, 
+        public workoutService:WorkoutService) {} 
+ 
+    ngOnInit() { 
+        this.workoutList = this.workoutService.getWorkouts(); 
+    } 
+ 
+    onSelect(workout: WorkoutPlan) { 
+        this.router.navigate( ['./builder/workout', workout.name] ); 
+    } 
+}
+``` 
+#### Workout and exercist list views
+##### Workout list view
+To get the view working, open workouts.component.html and add the following markup:
+```javascript 
+<div class="container-fluid"> 
+    <div id="content-container" class="row"> 
+        <left-nav-main></left-nav-main> 
+        <h1 class="text-center">Workouts</h1> 
+        <div class="workouts-container"> 
+            <div *ngFor="let workout of workoutList|orderBy:'title'" class="workout tile" (click)="onSelect(workout)"> 
+                <div class="title">{{workout.title}}</div> 
+                <div class="stats"> 
+                    <span class="duration" title="Duration"><span class="glyphicon glyphicon-time"></span> - {{workout.totalWorkoutDuration()|secondsToTime}}</span> 
+                    <span class="length pull-right" title="Exercise Count"><span class="glyphicon glyphicon-th-list"></span> - {{workout.exercises.length}}</span> 
+                </div> 
+            </div> 
+        </div> 
+    </div> 
+</div>
+```
+You will also need to move the secondsToTime pipe into the shared folder and include it in the SharedModule. Then add the SharedModule to the WorkoutBuilderModule as an additional import.
+* Finally, we bind the click event to the following onSelect method that we add to our component:
+```javascript 
+ onSelect(workout: WorkoutPlan) { 
+     this.router.navigate( ['./builder/workout', workout.name] ); 
+ }
+ ``` 
+##### Exercises list view 
+* For the Exercises component, we will follow an approach that is almost identical to what we did to display the list of workouts in the Workouts component. So we won’t show that code here.  Just add the files for exercise.conponent.ts and exercise.component.html from checkpoint 4.4. 
+* When you are done copying the files, click on the Exercises link on the left navigation to load the 12 exercises that we have already configured in WorkoutService.
+* In the final list view, we will add is a list of exercises that will display in the left context menu for the Workout Builder screen. This view is loaded in the left navigation when we create or edit a workout. Using Angular’s component based approach, we will update the leftNavExercisesComponent and its related view to provide this functionality. Again we won’t show that code here.  Just add the files for left-nav-exercises.component.ts and left-nav-exercises.component.html from the trainer/src/components/navigation folder in checkpoint 4.4.   
 ### Building a Workout
-We'll review the relevant code in Checkpoint 4.5
-* Finishing left nav
-* Adding Workout Builder Service
-* Adding exercises using ExerciseNav
-* Route parameters
-* Route guards
-* Implement the Workout Component
+The code for this section is in Checkpoint 4.5
+#### Finishing left nav
+At the end of the previous section, we updated the left navigation view for the Workout component to show a list of exercises.  Our intention was to let the user click on an arrow next to an exercise to add it to the workout.  At the time, we deferred implementing the addExercise method in the LeftNavExercisesComponent that was bound to that click event.  Now we will go ahead and do that. 
+#### Adding Workout Builder Service
+The WorkoutBuilderService tracks the state of the workout being built. It: 
+* Tracks the current workout   
+* Creates a new workout 
+* Loads the existing workout 
+* Saves the workout 
+Copy workout-builder-service.ts from the workout-builder/builder-services folder under trainer/src/components in checkpoint 4.5.
+While we normally make services available application wide, the WorkoutBuilderService will only be used in the Workout Builder feature. Therefore, instead of registering it with the providers in AppModule, we will register it in the provider array of the WorkoutBuilderModule as follows (after adding it as an import at the top of the file):
+```javascript
+providers: [ 
+    WorkoutBuilderService, 
+    . . . 
+] 
+```
+Let’s look at some of the relevant parts of the service. 
+WorkoutBuilderService needs the type definitions for WorkoutPlan, Exercise and the WorkoutService, so we import these into the component:
+```javascript 
+import { WorkoutPlan, Exercise } from '../../../services/model'; 
+import { WorkoutService } from "../../../services/workout-service";
+``` 
+WorkoutBuilderService has a dependency on WorkoutService to provide persistence and querying capabilities.  We resolve this dependency by injecting the WorkoutService into the constructor for the WorkoutBuilderService:
+```javascript 
+constructor(public workoutService:WorkoutService){}
+``` 
+WorkoutBuilderService also needs to track the workout being built. We use the buildingWorkout property for this. The tracking starts when we call the startBuilding method on the service:
+```javascript 
+startBuilding(name: string){ 
+    if(name){ 
+        this.buildingWorkout = this.workoutService.getWorkout(name) 
+        this.newWorkout = false; 
+    }else{ 
+        this.buildingWorkout = new WorkoutPlan("", "", 30, []); 
+        this.newWorkout = true; 
+    } 
+    return this.buildingWorkout; 
+} 
+```
+#### Adding exercises using ExerciseNav
+To add exercises to the workout we are building, we just need to import and inject the WorkoutBuilderService into the LeftNavExercisesComponent and call its addExercise method passing the selected exercise as a parameter:
+```javascript 
+constructor( 
+    public workoutService:WorkoutService, 
+    public workoutBuilderService:WorkoutBuilderService) {} 
+. . . 
+addExercise(exercise:Exercise) { 
+    this.workoutBuilderService.addExercise(new ExercisePlan(exercise, 30)); 
+}
+```
+#### Implement the Workout Component
+The Workout component is associated with two routes/views namely /builder/ workout/new and /builder/workout/:id. These routes handle both creating and editing workout scenarios. The first job of the component is to load or create the workout that it needs to manipulate. 
+#### Route parameters
+he WorkoutComponent is associated with two routes namely /builder/workout/new and /builder/workout/:id. The difference in these two routes lies at what is at the end of these routes – in one case it is /new and in the other /:id. These are called Route Parameters.  The :id in the second route is a token for a route parameter. The router will convert the token to the id for the workout component.  As we saw earlier this means that the URL that will be passed to the component in the case of the 7 Minute Workout will be /builder/workout/7MinuteWorkout. 
+How do we know that this is the workout name is the right parameter for the id?  As you recall, when we set up the event for handling a click on the Workout tiles on the Workouts screen that takes us to the Workout screen, we designated the workout name as the parameter for the id like so:
+```javascript 
+ onSelect(workout: WorkoutPlan) { 
+     this.router.navigate( ['./builder/workout', workout.name] ); 
+ }
+ ```  
+#### Route guards
+Copy workout.guard.ts from the workout-builder/workout folder under trainer/src/components in Checkpoint 4.5 and you will see the following code:
+```javascript 
+import { Injectable } from '@angular/core'; 
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router'; 
+ 
+import { WorkoutPlan } from "../../../services/model"; 
+import { WorkoutService } from "../../../services/workout-service"; 
+ 
+@Injectable() 
+export class WorkoutGuard implements CanActivate { 
+    publicworkout: WorkoutPlan; 
+ 
+    constructor( 
+        public workoutService: WorkoutService, 
+        public router: Router) {} 
+ 
+    canActivate( 
+        route: ActivatedRouteSnapshot, 
+        state: RouterStateSnapshot 
+    ) { 
+        this.workout = this.workoutService.getWorkout(route.params['id']); 
+        if(this.workout){ return true; } 
+        this.router.navigate(['/builder/workouts']); 
+        return false; 
+    } 
+}
+```  
+The final step in implementing the WorkoutGuard is to add it to the route configuration for the WorkoutComponent. So update workout-builder.routes.ts as follows:
+```javascript 
+export const workoutBuilderRoutes: Routes = [ 
+    { 
+        path: '', 
+        component: WorkoutBuilderComponent, 
+        children: [ 
+             {path:'', pathMatch: 'full', redirectTo: 'workouts'}, 
+             {path:'workouts', component: WorkoutsComponent }, 
+             {path:'workout/new',  component: WorkoutComponent }, 
+             {path:'workout/:id', component: WorkoutComponent, canActivate: [WorkoutGuard] }, 
+             {path:'exercises', component: ExercisesComponent}, 
+             {path:'exercise/new', component: ExerciseComponent }, 
+             {path:'exercise/:id', component: ExerciseComponent } 
+        ] 
+    } 
+];
+``` 
+#### Implement the Workout Component (cont.)
+Copy the workout.component.ts file from the workout-builder/workout folder under trainer/src/components in checkpoint 4.5.  (Also copy workout-builder.module.ts from the workout-builder folder. We’ll discuss the changes in this file a little later when we get to Angular forms.) 
+Open workout.component.ts and you’ll see that we have added a constructor that injects the ActivatedRoute and the WorkoutBuilderService:
+```javascript 
+    constructor( 
+    public route: ActivatedRoute, 
+    public workoutBuilderService:WorkoutBuilderService){ }
+``` 
+In addition, we have added the following ngOnInit method:
+```javascript  
+ngOnInit() { 
+    this.sub = this.route.params.subscribe(params => { 
+        let workoutName = params['id']; 
+        if (!workoutName) { 
+            workoutName = ""; 
+        } 
+        this.workout = this.workoutBuilderService.startBuilding(workoutName); 
+    }); 
+} 
+```
+#### Implementing the Workout Template
+Now copy the workout.component.html files from the workout-builder/workout folder under trainer/src/components in checkpoint 4.5.  Run the app, navigate to /builder/workouts, and double-click on the 7 Minute Workout tile. This should load the 7 Minute Workout details with a view similar to the one shown at the start of the section Building a workout. 
+In the event of any problem, you can refer to the checkpoint4.5 code in the GitHub repository. GitHub branch: checkpoint4.5 (folder – trainer) 
 ## Forms
+
+
+## Angular Forms
+
 ### Template Driven Forms
+In this section, we will be starting with Checkpoint 4.5
+
+which introduces the following:
+* Steps to convert a normal html5 form to an angular form
+* FormsModule
+* NgForms Directive
+* NgModel Directive
+* Validations
+
+### Template Driven Forms - Features
+* Developing the Form in the html template using NgForms and NgModel directives.
+* Validation logic is handled in the html form using some NgModel and angular css classes.
+* Two way databinding is enabled so that the model(component.ts) and the html form elements are always in sync.
+* Default form submission can be supressed and a special NgSubmit event handler is bound to the component function.
+
+### Step1: Go to the checkpoint4.5 or you can download zip  file from [GitHub](https://github.com/chandermani/angular2byexample/archive/checkpoint4.5.zip) 
+
+### Step2: Import angular forms module.
+```javascript
+//open the systemjs.config.js file in the trainer folder 
+//and add forms module
+var ngPackageNames = [ 
+    'common', 
+    'compiler', 
+    'core', 
+    'forms',   //forms module import.
+    'http', 
+    'platform-browser', 
+    'platform-browser-dynamic', 
+    'router', 
+    'testing' 
+  ]; 
+```
+
+### Step3: import the forms module in the your component module.
+
+>In our lab today, open workout-builder.module.ts in trainer/src/components/workout-builder folder and refer the forms module.
+
+```javascript
+//
+@NgModule({
+    imports: [ 
+        CommonModule, 
+        FormsModule, //forms module reference for Template Driven forms.
+        SharedModule, 
+        workoutBuilderRouting 
+    ]
+});
+
+// Once this is refereed, all components in this module can have access to forms directives.
+``` 
+> We will be using the NgForm and ngModel directives in the html templates.
+
+### Using NgForm
+``` html
+<form #f="ngForm" (ngSubmit)="save(f.form)" novalidate>
+
+</form>
+```
+> #f - template reference variable.
+> 
+> novalidate - disables the default form submit behavior
+> 
+>(ngSubmit) - form submit handler - calls the save method in the compoenent.
+
+### ngModel
+* Fundamental directive in forms module.
+* Supports two data binding.
+* Manages the state of the form like valid/invalid.
+
+> Open workout-component.html and look for ngModel.
+>
+> It is applied only to input elements.
+
+```html
+<input name="workoutName" id="workout-name" [(ngModel)]="workout.name"> 
+```
+> look for **[()]** - Two way databinding 
+
+### To check two way databinding,
+#### 
+
+Add the interpolation to next to the input tag.
+
+```html
+<input name="workoutName" id="workout-name" [(ngModel)]="workout.name"> 
+{{workout.name}}
+```
+
+### Validation: ngModel is the main directive that is used to implement validation
+
+#### Out of box validations supported by angular.
+* required
+* min
+* max
+* pattern
+
+### To get started with validation, assign a local variable to ngModel and add required attribute
+```html
+<input #name="ngModel" name="workoutName" id="workout-name" 
+[(ngModel)]="workout.name" required> 
+{{workout.name}}
+```
+> Look for **#name** - local variable.
+>
+> Look for **required**
+
+### How to check the state
+
+
+
+
 [Kumanan]
 ### Model Driven Forms
 #### Getting Started

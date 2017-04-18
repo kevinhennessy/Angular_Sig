@@ -97,8 +97,10 @@ which introduces the following:
 * Adding skeleton files for each component
 * Personal trainer navigation with routes
 ### Child Routing
-#### Start at [Checkpoint 4.1](https://github.com/chandermani/angular2byexample/tree/checkpoint4.1). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip).
-#### Finished code at at [Checkpoint 4.2](https://github.com/chandermani/angular2byexample/tree/checkpoint4.2). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.2.zip).
+> **Start at [Checkpoint 4.1](https://github.com/chandermani/angular2byexample/tree/checkpoint4.1). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip).**
+
+> **Finished code at at [Checkpoint 4.2](https://github.com/chandermani/angular2byexample/tree/checkpoint4.2). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.2.zip).**
+
 In this section we'll be adding the code for child routes. 
 
 #### Adding the child routing component
@@ -194,9 +196,13 @@ import { workoutBuilderRouting } from './workout-builder.routes';
 
 #### Updating app.routes to remove the workout builder component and its route from that file.
 Finally, go back to app.routes.ts and remove the import of the WorkoutBuilderComponent and its route.
+
+**Run the app [placeholder]**
 ### Lazy Loading of Routes
-#### Start at [Checkpoint 4.2](https://github.com/chandermani/angular2byexample/tree/checkpoint4.2). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.21.zip).
-#### Finished code at at [Checkpoint 4.3](https://github.com/chandermani/angular2byexample/tree/checkpoint4.3). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.3.zip).
+> **Start at [Checkpoint 4.2](https://github.com/chandermani/angular2byexample/tree/checkpoint4.2). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.21.zip).**
+
+> **Finished code at at [Checkpoint 4.3](https://github.com/chandermani/angular2byexample/tree/checkpoint4.3). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.3.zip).**
+
 In this section we'll be adding the code for lazy loading. 
 * First, modify app.routes.ts to add the following separate route configuration under the existing imports:
 ```javascript
@@ -230,8 +236,9 @@ export const workoutBuilderRoutes: Routes = [
 * Finally go back to the app-module.ts and remove the WorkoutBuilderModule import in the @NgModule configuration in that file.
 
 ### Integrating Sub and Side Level Navigation
-#### Continue in [Checkpoint 4.2](https://github.com/chandermani/angular2byexample/tree/checkpoint4.2). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.21.zip).
-#### Finished code at at [Checkpoint 4.3](https://github.com/chandermani/angular2byexample/tree/checkpoint4.3). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.3.zip).
+> **Continue in [Checkpoint 4.2](https://github.com/chandermani/angular2byexample/tree/checkpoint4.2). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.21.zip).**
+
+> **Finished code at at [Checkpoint 4.3](https://github.com/chandermani/angular2byexample/tree/checkpoint4.3). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.3.zip).**
 
 #### Sub-level navigation
 * Open the sub-nav.component.html file and change the HTML in it to the following:
@@ -252,7 +259,7 @@ export const workoutBuilderRoutes: Routes = [
 The component based nature of Angular gives us an easy way to implement these context-sensitive menus.  We can define new components for each of the menus and then import them into the components that need them.  In this case, we have three components that will need side menus – Workouts, Exercises, and Workout.
 
 We already have files for the two menu components including template files and have imported them into the WorkoutBuilderModule.  We will now integrate these into the components that need them.   
-* First, modify the template – workouts.component.html – to add the selector for the menu 
+* First, modify the template – **workouts.component.html** – to add the selector for the menu 
 ```javascript
 <div class="container-fluid"> 
     <div id="content-container" class="row"> 
@@ -261,7 +268,7 @@ We already have files for the two menu components including template files and h
     </div> 
 </div>
 ``` 
-* Then replace the placeholder text in the left-nav-main.component.html with the navigation links to the WorkoutsComponent and ExercisesComponent:
+* Then replace the placeholder text in the **left-nav-main.component.html** with the navigation links to the WorkoutsComponent and ExercisesComponent:
 ```javascript 
 <div class="col-sm-2 left-nav-bar"> 
     <div class="list-group"> 
@@ -271,7 +278,7 @@ We already have files for the two menu components including template files and h
 </div> 
 ```
 * Follow the exact same steps to complete the side menu for the Exercises component. 
-We won’t show the code for doing these two menus here but you can find it in the workout-builder/exercises folder under trainer/src/components in checkpoint 4.3 of the GitHub repository. 
+We won’t show the code for doing these two menus here but you can find it in the **workout-builder/exercises folder under trainer/src/components** in checkpoint 4.3 of the GitHub repository. 
 * For the menu for the Workout screen, the steps are the same except that you should change the left-nav-exercises.component.html to the following: 
 ```javascript
 <div class="col-sm-2 left-nav-bar"> 
@@ -281,9 +288,11 @@ We won’t show the code for doing these two menus here but you can find it in t
 We will use this template as the starting point for building out a list of exercises that will appear on the left-hand side of the screen and can be selected for inclusion in a workout. 
 
 ### Implementing workout and exercise lists
-#### Start at [Checkpoint 4.3](https://github.com/chandermani/angular2byexample/tree/checkpoint4.3). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.3.zip).
-#### Finished code at at [Checkpoint 4.4](https://github.com/chandermani/angular2byexample/tree/checkpoint4.4). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.4.zip).
- If you coding along be sure and update app.css that is found in the **Checkpoint 4.4**.
+> **Start at [Checkpoint 4.3](https://github.com/chandermani/angular2byexample/tree/checkpoint4.3). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.3.zip).**
+
+> **Finished code is at [Checkpoint 4.4](https://github.com/chandermani/angular2byexample/tree/checkpoint4.4). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.4.zip).**
+ 
+ >If you are coding along be sure and update app.css that is found in the **Checkpoint 4.4**.
 #### Workout Service
 * Locate workout-service.ts in the trainer/src/services folder in **Checkpoint 4.4**. The code in that file should look like the following except for the implementation of the two methods setupInitialExercises and setupInitialWorkouts, which we have left out because of their length.
 ```javascript
@@ -382,7 +391,7 @@ To get the view working, open workouts.component.html and add the following mark
     </div> 
 </div>
 ```
-You will also need to move the secondsToTime pipe into the shared folder and include it in the SharedModule. Then add the SharedModule to the WorkoutBuilderModule as an additional import.
+You will also need to move the **secondsToTime pipe** into the shared folder and include it in the SharedModule. Then add the SharedModule to the WorkoutBuilderModule as an additional import.
 * Finally, we bind the click event to the following onSelect method that we add to our component:
 ```javascript 
  onSelect(workout: WorkoutPlan) { 
@@ -390,12 +399,13 @@ You will also need to move the secondsToTime pipe into the shared folder and inc
  }
  ``` 
 ##### Exercises list view 
-* For the Exercises component, we will follow an approach that is almost identical to what we did to display the list of workouts in the Workouts component. So we won’t show that code here.  Just add the files for exercise.conponent.ts and exercise.component.html from [Checkpoint 4.4](https://github.com/chandermani/angular2byexample/tree/checkpoint4.4).Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.4.zip). 
+* For the Exercises component, we will follow an approach that is almost identical to what we did to display the list of workouts in the Workouts component. So we won’t show that code here.  Just add the files for **exercise.component.ts** and **exercise.component.html** from [Checkpoint 4.4](https://github.com/chandermani/angular2byexample/tree/checkpoint4.4). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.4.zip). 
 * When you are done copying the files, click on the Exercises link on the left navigation to load the 12 exercises that we have already configured in WorkoutService.
-* In the final list view, we will add is a list of exercises that will display in the left context menu for the Workout Builder screen. This view is loaded in the left navigation when we create or edit a workout. Using Angular’s component based approach, we will update the leftNavExercisesComponent and its related view to provide this functionality. Again we won’t show that code here.  Just add the files for left-nav-exercises.component.ts and left-nav-exercises.component.html from the trainer/src/components/navigation folder in [Checkpoint 4.4](https://github.com/chandermani/angular2byexample/tree/checkpoint4.4). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.4.zip).   
+* In the final list view, we will add is a list of exercises that will display in the left context menu for the Workout Builder screen. This view is loaded in the left navigation when we create or edit a workout. Using Angular’s component based approach, we will update the leftNavExercisesComponent and its related view to provide this functionality. Again we won’t show that code here.  Just add the files for **left-nav-exercises.component.ts** and **left-nav-exercises.component.html** from the trainer/src/components/navigation folder in [Checkpoint 4.4](https://github.com/chandermani/angular2byexample/tree/checkpoint4.4). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.4.zip).   
 ### Building a Workout
-#### Start at [Checkpoint 4.4](https://github.com/chandermani/angular2byexample/tree/checkpoint4.4). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.4.zip).
-#### Finished code at at [Checkpoint 4.5](https://github.com/chandermani/angular2byexample/tree/checkpoint4.5). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.5.zip). 
+> **Start at [Checkpoint 4.4](https://github.com/chandermani/angular2byexample/tree/checkpoint4.4). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.4.zip).**
+
+> **Finished code is at [Checkpoint 4.5](https://github.com/chandermani/angular2byexample/tree/checkpoint4.5). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.5.zip).** 
 #### Finishing left nav
 At the end of the previous section, we updated the left navigation view for the Workout component to show a list of exercises.  Our intention was to let the user click on an arrow next to an exercise to add it to the workout.  At the time, we deferred implementing the addExercise method in the LeftNavExercisesComponent that was bound to that click event.  Now we will go ahead and do that. 
 #### Adding Workout Builder Service
@@ -406,7 +416,7 @@ The WorkoutBuilderService tracks the state of the workout being built. It:
 * Saves the workout
 
 Follow these steps to implement the Workout Builder Service:
-* Copy workout-builder-service.ts from the workout-builder/builder-services folder under trainer/src/components in **[Checkpoint 4.5](https://github.com/chandermani/angular2byexample/tree/checkpoint4.5)**.
+* Copy **workout-builder-service.ts** from the workout-builder/builder-services folder under trainer/src/components in **[Checkpoint 4.5](https://github.com/chandermani/angular2byexample/tree/checkpoint4.5)**.
 
 * While we normally make services available application wide, the WorkoutBuilderService will only be used in the Workout Builder feature. Therefore, instead of registering it with the providers in AppModule, we will register it in the provider array of the WorkoutBuilderModule as follows (after adding it as an import at the top of the file):
 ```javascript
@@ -452,7 +462,10 @@ addExercise(exercise:Exercise) {
 #### Implement the Workout Component
 The Workout component is associated with two routes/views namely /builder/ workout/new and /builder/workout/:id. These routes handle both creating and editing workout scenarios. The first job of the component is to load or create the workout that it needs to manipulate. 
 #### Route parameters
-he WorkoutComponent is associated with two routes namely /builder/workout/new and /builder/workout/:id. The difference in these two routes lies at what is at the end of these routes – in one case it is /new and in the other /:id. These are called Route Parameters.  The :id in the second route is a token for a route parameter. The router will convert the token to the id for the workout component.  As we saw earlier this means that the URL that will be passed to the component in the case of the 7 Minute Workout will be /builder/workout/7MinuteWorkout. 
+The WorkoutComponent is associated with two routes namely **/builder/workout/new** and **/builder/workout/:id**. The difference in these two routes lies at what is at the end of these routes – in one case it is **/new** and in the other **/:id**. These are called Route Parameters.  The **:id** in the second route is a token for a route parameter. The router will convert the token to the id for the workout component.  
+
+As we saw earlier this means that the URL that will be passed to the component in the case of the 7 Minute Workout will be /builder/workout/7MinuteWorkout.
+
 How do we know that this is the workout name is the right parameter for the id?  As you recall, when we set up the event for handling a click on the Workout tiles on the Workouts screen that takes us to the Workout screen, we designated the workout name as the parameter for the id like so:
 ```javascript 
  onSelect(workout: WorkoutPlan) { 
@@ -460,7 +473,7 @@ How do we know that this is the workout name is the right parameter for the id? 
  }
  ```  
 #### Route guards
-Copy workout.guard.ts from the workout-builder/workout folder under trainer/src/components in [Checkpoint 4.5](https://github.com/chandermani/angular2byexample/tree/checkpoint4.5).Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.5.zip). You will see the following code:
+Copy workout.guard.ts from the workout-builder/workout folder under trainer/src/components in **[Checkpoint 4.5](https://github.com/chandermani/angular2byexample/tree/checkpoint4.5).** Zip file is **[here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.5.zip)**. You will see the following code:
 ```javascript 
 import { Injectable } from '@angular/core'; 
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router'; 
@@ -487,7 +500,7 @@ export class WorkoutGuard implements CanActivate {
     } 
 }
 ```  
-The final step in implementing the WorkoutGuard is to add it to the route configuration for the WorkoutComponent. So update workout-builder.routes.ts as follows:
+The final step in implementing the WorkoutGuard is to add it to the route configuration for the WorkoutComponent. So update **workout-builder.routes.ts** as follows:
 ```javascript 
 export const workoutBuilderRoutes: Routes = [ 
     { 
@@ -506,7 +519,8 @@ export const workoutBuilderRoutes: Routes = [
 ];
 ``` 
 #### Implement the Workout Component (cont.)
-Copy the workout.component.ts file from the workout-builder/workout folder under trainer/src/components in [Checkpoint 4.5](https://github.com/chandermani/angular2byexample/tree/checkpoint4.5.Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.5.zip).(Also copy workout-builder.module.ts from the workout-builder folder. We’ll discuss the changes in this file a little later when we get to Angular forms.) 
+Copy the **workout.component.ts** file from the workout-builder/workout folder under trainer/src/components in **[Checkpoint 4.5](https://github.com/chandermani/angular2byexample/tree/checkpoint4.5.Zip)** file is **[here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.5.zip)**. (Also copy **workout-builder.module.ts** from the workout-builder folder. We’ll discuss the changes in this file a little later when we get to Angular forms.)
+
 Open workout.component.ts and you’ll see that we have added a constructor that injects the ActivatedRoute and the WorkoutBuilderService:
 ```javascript 
     constructor( 
@@ -526,8 +540,10 @@ ngOnInit() {
 } 
 ```
 #### Implementing the Workout Template
-Now copy the workout.component.html files from the workout-builder/workout folder under trainer/src/components in [Checkpoint 4.5](https://github.com/chandermani/angular2byexample/tree/checkpoint4.5).Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.5.zip). Run the app, navigate to /builder/workouts, and double-click on the 7 Minute Workout tile. This should load the 7 Minute Workout details with a view similar to the one shown at the start of the section Building a workout. 
-In the event of any problem, you can refer to the checkpoint4.5 code in the GitHub repository. GitHub branch: The finished code for this section is in the trainer folder in [Checkpoint 4.5](https://github.com/chandermani/angular2byexample/tree/checkpoint4.5).Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.5.zip).
+Now copy the workout.component.html files from the workout-builder/workout folder under trainer/src/components in **[Checkpoint 4.5](https://github.com/chandermani/angular2byexample/tree/checkpoint4.5)**. Zip file is **[here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.5.zip)**. 
+
+Run the app, navigate to /builder/workouts, and double-click on the 7 Minute Workout tile. This should load the 7 Minute Workout details.
+
 ## Forms
 
 

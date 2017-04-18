@@ -172,7 +172,7 @@ app.module.ts:
 
 > **Finished code at at [Checkpoint 4.2](https://github.com/chandermani/angular2byexample/tree/checkpoint4.2). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.2.zip).**
 
-In this section we'll be adding the code for child routes.
+In this section we'll be adding the code for child routes for the workout builder:
 ![alt text](ChildRoutes.png "Child Routes")
 
 #### Adding the child routing component
@@ -269,8 +269,6 @@ import { workoutBuilderRouting } from './workout-builder.routes';
 #### Updating app.routes to remove the workout builder component and its route from that file.
 Finally, go back to app.routes.ts and remove the import of the WorkoutBuilderComponent and its route.
 
-![alt text](ChildRoutes.png "Child Routes")
-
 **Run the app**
 ### Lazy Loading of Routes
 > **Start at [Checkpoint 4.2](https://github.com/chandermani/angular2byexample/tree/checkpoint4.2). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.21.zip).**
@@ -316,7 +314,7 @@ export const workoutBuilderRoutes: Routes = [
 > **Finished code at at [Checkpoint 4.3](https://github.com/chandermani/angular2byexample/tree/checkpoint4.3). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.3.zip).**
 
 #### Sub-level navigation
-* Open the sub-nav.component.html file and change the HTML in it to the following:
+* Open the **sub-nav.component.html** file and change the HTML in it to the following:
 ```javascript 
 <div> 
     <a [routerLink]="['/builder/workouts']" class="btn btn-primary"> 
@@ -870,11 +868,81 @@ export class AlphaNumericValidator {
         } 
         return null; 
     } 
-} 
-```
+}
+``` 
+  
 #### Adding the Form Model to our HTML View
 Copy in the code for **exercise.component.html** from [Checkpoint 4.6](https://github.com/chandermani/angular2byexample/tree/checkpoint4.6).
+So far we have been working behind the scenes in our class to construct our form. The next step is to wire up our form to the view.  To do this, we use we use the same controls we used to build the form in our code:formGroup, formControl  and formArray. 
+Open exercise.component.html and notice the following form tag
+```javascript 
+<form [formGroup]="exerciseForm" (ngSubmit)="onSubmit(exerciseForm)" novalidate>
+```  
+Within the tag we are first assigning the exerciseForm that we just built in code to formGroup.  This establishes the connection between our coded model and the form in the view.  We also wire up the ngSubmit event to an onSubmit method in our code. (We’ll discuss this method a little later.) Finally we turn off the browser’s form validation using novalidate.  
+#### Adding Form Controls to our Form inputs 
+Next we start constructing the inputs for our form.  We’ll start with the input for the name of our exercise:
+```javascript  
+<input name="name" formControlName="name" class="form-control" id="name" placeholder="Enter exercise name. Must be unique.">
+```  
+We assign the name of our coded form control to formControlName. This establishes the link between the control in our code with the input field in the markup.  One other item of interest here is that do not use the required attribute.  
+#### Adding Validation 
+The next thing that we do is add a validation message to the control that will display in the event of a validation error:
+```javascript 
+<label *ngIf="exerciseForm.controls.name.hasError('required') && (exerciseForm.controls.name.touched || submitted)" class="alert alert-danger validation-message">Name is required</label>
+```  
+Notice that this markup has a lot of similarity to what we used in template driven forms for validation except that the syntax for identifying the control is somewhat more verbose Again it is checking the state the hasError property of the control to make sure it is valid. 
+But wait a minute, how can we validate this input?  Haven’t we have removed the required attribute from our the tag?  This is where the control mappings that we added in our code come into play.  If you look back at the code for the form model, you see the following mapping for the name control:
+```javascript 
+'name': [this.exercise.name, Validators.required],
+``` 
+The second element in the mapping array assigns the required validator to the name form control.  This means that we don’t have to add anything to our template; instead the form control itself is attached to the template with a required validator. The ability to add a validator in our code enables us to conveniently add validators outside our template.  It is especially useful when it comes to writing custom validators with complex logic behind them. 
+#### Adding Dynamic Form Controls 
+As we mentioned earlier, the Exercise form that we are building requires that we allow the user to add one or more videos to the exercise.  Since we don’t know how many videos the user may want to add, we will have to build the input fields for these videos dynamically as the user clicks the Add Video button.  Here’s how it will look: 
+ 
+Insert image 5079_04_22.png
 
+We have already seen the code in our component class that we use to do this. Now let’s take a look at how it is implemented in our template. 
+We first use ngFor to loop through our list of videos. Then we add assign the index in our videos to a local variable i. No surprises so far.
+```javascript  
+<div *ngFor="let video of videoArray.controls; let i=index" class="form-group">
+```  
+Inside the loop we do three things. First, we add a button to allow the user to delete a video:
+```javascript 
+<button type="button" (click)="deleteVideo(i)" title="Delete this video." class="btn alert-danger pull-right"> 
+    <span class="glyphicon glyphicon-trash text-danger"></span> 
+</button>
+```  
+We bind a deleteVideo method in our component class to the button’s click event and pass it the index of the video being deleted. 
+Next we dynamically add a video input field for each of the videos currently in our exercise:
+```javascript  
+<input type="text" class="form-control" [formControlName]="i" placeholder="Add a related youtube video identified."/>
+``` 
+We then add a validation message for each of the video input fields 
+```javascript 
+<label *ngIf="exerciseForm.controls['videos'].controls[i].hasError('required') && (exerciseForm.controls['videos'].controls[i].touched || submitted)" class="alert alert-danger validation-message">Video identifier is required</label>
+```  
+The validation message follows the same pattern for displaying the message that we have used elsewhere in this chapter. We drill into the exerciseFormControls group to find the particular control by its index. Again the syntax is verbose but easy enough to understand.
+
+#### Integrating the custom validator into our forms
+So how do we plug our custom validator into our form? If we are using model driven forms, the answer is pretty simple.  We add it just like a built-in validator when we build our form in code.  Let’s do that.
+
+* Open exercise.component.ts and first add an import for our custom validator:
+```javascript 
+import {AlphaNumericValidator} from "./alphanumeric-validator";
+``` 
+* Then, modify the form builder code to add the validator to the name control:
+```javascript 
+buildExerciseForm(){ 
+    this.exerciseForm = this._formBuilder.group({ 
+'name': [this.exercise.name, [Validators.required, AlphaNumericValidator.invalidAlphaNumeric]], 
+. . . [other form controls] . . . 
+    }); 
+} 
+```
+* The final step is to incorporate the appropriate validation message for the control in to our template.  Open workout.component.html and add the following label just below the label that displays the message for the required validator:
+```javascript 
+<label *ngIf="exerciseForm.controls.name.hasError('invalidAlphaNumeric') && (exerciseForm.controls.name.touched || submitted)" class="alert alert-danger validation-message">Name must be alphanumeric</label>
+```
 ### Homework
 * Read Chapter 5
 * Grab the repo for Checkpoint 5.1

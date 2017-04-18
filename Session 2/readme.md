@@ -88,24 +88,95 @@ We setup routing in our application by making the following changes:
     - Add a link to the workout route.  Notice the routeLink property binding.  This is used throughout the application.  The start template is just one example.
 - workout-runner.component.ts 
     - Navigates programatically using the router service: this.router.navigate( ['/finish'] );
+
+### Proposed Workout Builder Routes
+
+| Route        | Description    |
+| ------------- |-------------|
+| /builder      | This just redirects to builder/workouts.  |
+| /builder/workouts     | This lists all the available workouts. This is the landing page for Workout Builder.  |
+| /builder/workout/new  | This creates a new workout. |
+| /builder/workout/:id   | This edits an existing workout with the specific ID.|
+| /builder/exercises   | This lists all the available exercises. |
+| /builder/exercises/new  | This creates a new exercise. |
+| /builder/exercises/:id  | This edits an existing exercise with the specific ID.    
     
 ### Getting Started
 > **Start at [Checkpoint 4.1](https://github.com/chandermani/angular2byexample/tree/checkpoint4.1). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip).**
 
-which introduces the following:
-* Sharing the workout model as a service
-* Personal trainer layout
-* Adding skeleton files for each component
-* Personal trainer navigation with routes
+Note the following changes from the previous checkpoint:
+
+* if you look at the route configuration in **app.routes.ts** in the src/components/app folder, you will find one new route definition – **builder**.
+```javascript
+export const routes: Routes = [ 
+  ... 
+{ path: 'builder', component: WorkoutBuilderComponent }, 
+  ... 
+];
+``` 
+* Behind the scenes, we have added another router link for this link into **start.html**:
+```javascript 
+<a [routerLink]="['/builder']"> 
+  <span>Create a Workout</span> 
+  <span class="glyphicon glyphicon-plus"></span> 
+</a>
+``` 
+* Again behind the scenes, we have added a **WorkoutBuilderComponent** in the trainer/src/components/workout-builder folder with the following related template in **workout-builder.component.html**:
+```javascript 
+<div class="row"> 
+    <div class="col-sm-3"></div> 
+    <div class="col-sm-6"> 
+        <h1 class="text-center">Workout Builder</h1> 
+    </div> 
+    <div class="col-sm-3"></div> 
+</div>
+``` 
+* And this view is displayed on the screen under the header using the router outlet in our **app.component.ts** view template:
+```javascript 
+<div class="container body-content app-container"> 
+    <router-outlet></router-outlet> 
+</div>
+``` 
+* Then we have wrapped this component in a new module named  **workout-builder.module.ts**:
+
+```javascript 
+import { NgModule }      from '@angular/core'; 
+import { CommonModule } from '@angular/common'; 
+ 
+import { WorkoutBuilderComponent } from "./workout-builder.component"; 
+ 
+@NgModule({ 
+    imports: [CommonModule], 
+    declarations: [ 
+        WorkoutBuilderComponent, 
+    ], 
+    exports: [WorkoutBuilderComponent], 
+}) 
+export class WorkoutBuilderModule { }
+``` 
+The only thing that might look different here from the other modules that we have created is that we are importing **CommonModule** instead of **BrowserModule**. This avoids our importing all of BrowserModule a second time, which would generate an error when we get to implementing lazy loading for this module. 
+
+* Finally, we have added an import for this module to
+
+```javascript
+app.module.ts: 
+  ... 
+@NgModule({ 
+  imports: [ 
+  ... 
+    WorkoutBuilderModule], 
+  ... 
+  ```
 ### Child Routing
 > **Start at [Checkpoint 4.1](https://github.com/chandermani/angular2byexample/tree/checkpoint4.1). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip).**
 
 > **Finished code at at [Checkpoint 4.2](https://github.com/chandermani/angular2byexample/tree/checkpoint4.2). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.2.zip).**
 
-In this section we'll be adding the code for child routes. 
+In this section we'll be adding the code for child routes.
+![alt text](ChildRoutes.png "Child Routes")
 
 #### Adding the child routing component
-* In the workout-builder directory, add a new TypeScript file named workout-builder.routes.ts.
+* In the workout-builder directory, add a new TypeScript file named **workout-builder.routes.ts**.
 * Then add the with the following imports to that file: 
 ```javascript
 import { ModuleWithProviders } from '@angular/core'; 
@@ -197,6 +268,8 @@ import { workoutBuilderRouting } from './workout-builder.routes';
 
 #### Updating app.routes to remove the workout builder component and its route from that file.
 Finally, go back to app.routes.ts and remove the import of the WorkoutBuilderComponent and its route.
+
+![alt text](ChildRoutes.png "Child Routes")
 
 **Run the app**
 ### Lazy Loading of Routes

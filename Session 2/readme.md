@@ -898,9 +898,8 @@ But wait a minute, how can we validate this input?  Haven’t we have removed th
 The second element in the mapping array assigns the required validator to the name form control.  This means that we don’t have to add anything to our template; instead the form control itself is attached to the template with a required validator. The ability to add a validator in our code enables us to conveniently add validators outside our template.  It is especially useful when it comes to writing custom validators with complex logic behind them. 
 #### Adding Dynamic Form Controls 
 As we mentioned earlier, the Exercise form that we are building requires that we allow the user to add one or more videos to the exercise.  Since we don’t know how many videos the user may want to add, we will have to build the input fields for these videos dynamically as the user clicks the Add Video button.  Here’s how it will look:
-![alt text](Dynamic.png "Dynamic Controls")
- 
-Insert image 5079_04_22.png
+
+![alt text](Dynamic.PNG "Dynamic Controls")
 
 We have already seen the code in our component class that we use to do this. Now let’s take a look at how it is implemented in our template. 
 We first use ngFor to loop through our list of videos. Then we add assign the index in our videos to a local variable i. No surprises so far.

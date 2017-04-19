@@ -88,19 +88,7 @@ We setup routing in our application by making the following changes:
     - Add a link to the workout route.  Notice the routeLink property binding.  This is used throughout the application.  The start template is just one example.
 - workout-runner.component.ts 
     - Navigates programatically using the router service: this.router.navigate( ['/finish'] );
-
-### Proposed Workout Builder Routes
-
-| Route        | Description    |
-| ------------- |-------------|
-| /builder      | This just redirects to builder/workouts.  |
-| /builder/workouts     | This lists all the available workouts. This is the landing page for Workout Builder.  |
-| /builder/workout/new  | This creates a new workout. |
-| /builder/workout/:id   | This edits an existing workout with the specific ID.|
-| /builder/exercises   | This lists all the available exercises. |
-| /builder/exercises/new  | This creates a new exercise. |
-| /builder/exercises/:id  | This edits an existing exercise with the specific ID.    
-    
+  
 ### Getting Started
 > **Start at [Checkpoint 4.1](https://github.com/chandermani/angular2byexample/tree/checkpoint4.1). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip).**
 
@@ -121,17 +109,23 @@ export const routes: Routes = [
   <span class="glyphicon glyphicon-plus"></span> 
 </a>
 ``` 
-* Again behind the scenes, we have added a **WorkoutBuilderComponent** in the trainer/src/components/workout-builder folder with the following related template in **workout-builder.component.html**:
+* Again behind the scenes, we have added a **WorkoutBuilderComponent** in the trainer/src/components/workout-builder folder with an inline template:
 ```javascript 
-<div class="row"> 
-    <div class="col-sm-3"></div> 
-    <div class="col-sm-6"> 
-        <h1 class="text-center">Workout Builder</h1> 
-    </div> 
-    <div class="col-sm-3"></div> 
-</div>
+import { Component } from '@angular/core';
+
+@Component({
+    template: `<div class="row"> 
+                    <div class="col-sm-3"></div> 
+                    <div class="col-sm-6"> 
+                        <h1 class="text-center">Workout Builder</h1> 
+                    </div> 
+                    <div class="col-sm-3"></div> 
+                </div> `
+    })
+export class WorkoutBuilderComponent{
+}
 ``` 
-* And this view is displayed on the screen under the header using the router outlet in our **app.component.ts** view template:
+* And this component's view is displayed on the screen under the header using the router outlet in our **app.component.ts** view template:
 ```javascript 
 <div class="container body-content app-container"> 
     <router-outlet></router-outlet> 
@@ -167,6 +161,17 @@ app.module.ts:
     WorkoutBuilderModule], 
   ... 
   ```
+### Proposed Workout Builder Routes
+
+| Route        | Description    |
+| ------------- |-------------|
+| /builder      | This just redirects to builder/workouts.  |
+| /builder/workouts     | This lists all the available workouts. This is the landing page for Workout Builder.  |
+| /builder/workout/new  | This creates a new workout. |
+| /builder/workout/:id   | This edits an existing workout with the specific ID.|
+| /builder/exercises   | This lists all the available exercises. |
+| /builder/exercises/new  | This creates a new exercise. |
+| /builder/exercises/:id  | This edits an existing exercise with the specific ID.      
 ### Child Routing
 > **Start at [Checkpoint 4.1](https://github.com/chandermani/angular2byexample/tree/checkpoint4.1). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip).**
 
@@ -350,8 +355,15 @@ We already have files for the two menu components including template files and h
     </div> 
 </div> 
 ```
-* Follow the exact same steps to complete the side menu for the Exercises component. 
-We won’t show the code for doing these two menus here but you can find it in the **workout-builder/exercises** folder under **trainer/src/components** in checkpoint 4.3 of the GitHub repository. 
+* Follow the exact same steps to complete the side menu for the Exercises component:
+```javascript
+<div class="container-fluid"> 
+    <div id="content-container" class="row"> 
+        <left-nav-main></left-nav-main> 
+        <h1 class="text-center">Exercises</h1> 
+    </div> 
+</div>
+```
 * For the menu for the Workout screen, the steps are the same except that you should change the left-nav-exercises.component.html to the following: 
 ```javascript
 <div class="col-sm-2 left-nav-bar"> 
@@ -365,9 +377,9 @@ We will use this template as the starting point for building out a list of exerc
 
 > **Finished code is at [Checkpoint 4.4](https://github.com/chandermani/angular2byexample/tree/checkpoint4.4). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.4.zip).**
  
- >If you are coding along be sure and update app.css that is found in the **Checkpoint 4.4**.
+ >If you are coding along be sure and update app.css that is found in the **Checkpoint 4.4** at this location [app.css](https://github.com/chandermani/angular2byexample/tree/checkpoint4.4/trainer/static/css).
 #### Workout Service
-* Locate workout-service.ts in the trainer/src/services folder in **Checkpoint 4.4**. The code in that file should look like the following except for the implementation of the two methods setupInitialExercises and setupInitialWorkouts, which we have left out because of their length.
+* Add [workout-service.ts](https://github.com/chandermani/angular2byexample/blob/checkpoint4.4/trainer/src/services/workout-service.ts) in the trainer/src/services folder in **Checkpoint 4.4**. The code in that file should look like the following except for the implementation of the two methods setupInitialExercises and setupInitialWorkouts, which we have left out because of their length.
 ```javascript
 import {Injectable} from '@angular/core'; 
 import {ExercisePlan} from './model'; 
@@ -464,7 +476,7 @@ To get the view working, open workouts.component.html and add the following mark
     </div> 
 </div>
 ```
-You will also need to move the **secondsToTime pipe** into the shared folder and include it in the SharedModule. Then add the SharedModule to the WorkoutBuilderModule as an additional import.
+You will also need to move the **secondsToTime pipe** from the workout-runner folder in the trainer/src/components directory into the shared folder in the same directory and include it in the SharedModule. Then add the SharedModule to the WorkoutBuilderModule as an additional import.
 * Finally, we bind the click event to the following onSelect method that we add to our component:
 ```javascript 
  onSelect(workout: WorkoutPlan) { 
@@ -754,7 +766,7 @@ import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
         workoutBuilderRouting 
     ],
 ```
-* Next copy exercise-builder-service.ts from the workout-builder/builder-services folder under trainer/src/components in [Checkpoint 4.6](https://github.com/chandermani/angular2byexample/tree/checkpoint4.6. and import it into workout-builder.module.ts:
+* Next copy exercise-builder-service.ts from the workout-builder/builder-services folder under trainer/src/components in [Checkpoint 4.6](https://github.com/chandermani/angular2byexample/tree/checkpoint4.6) and import it into workout-builder.module.ts:
 ```javascript 
 import { ExerciseBuilderService } from "./builder-services/exercise-builder-service";
 ``` 
@@ -873,35 +885,30 @@ export class AlphaNumericValidator {
   
 #### Adding the Form Model to our HTML View
 Copy in the code for **exercise.component.html** from [Checkpoint 4.6](https://github.com/chandermani/angular2byexample/tree/checkpoint4.6).
-So far we have been working behind the scenes in our class to construct our form. The next step is to wire up our form to the view.  To do this, we use we use the same controls we used to build the form in our code:formGroup, formControl  and formArray. 
 Open exercise.component.html and notice the following form tag
 ```javascript 
 <form [formGroup]="exerciseForm" (ngSubmit)="onSubmit(exerciseForm)" novalidate>
 ```  
-Within the tag we are first assigning the exerciseForm that we just built in code to formGroup.  This establishes the connection between our coded model and the form in the view.  We also wire up the ngSubmit event to an onSubmit method in our code. (We’ll discuss this method a little later.) Finally we turn off the browser’s form validation using novalidate.  
 #### Adding Form Controls to our Form inputs 
 Next we start constructing the inputs for our form.  We’ll start with the input for the name of our exercise:
 ```javascript  
 <input name="name" formControlName="name" class="form-control" id="name" placeholder="Enter exercise name. Must be unique.">
 ```  
-We assign the name of our coded form control to formControlName. This establishes the link between the control in our code with the input field in the markup.  One other item of interest here is that do not use the required attribute.  
 #### Adding Validation 
 The next thing that we do is add a validation message to the control that will display in the event of a validation error:
 ```javascript 
 <label *ngIf="exerciseForm.controls.name.hasError('required') && (exerciseForm.controls.name.touched || submitted)" class="alert alert-danger validation-message">Name is required</label>
 ```  
-Notice that this markup has a lot of similarity to what we used in template driven forms for validation except that the syntax for identifying the control is somewhat more verbose Again it is checking the state the hasError property of the control to make sure it is valid. 
-But wait a minute, how can we validate this input?  Haven’t we have removed the required attribute from our the tag?  This is where the control mappings that we added in our code come into play.  If you look back at the code for the form model, you see the following mapping for the name control:
+But wait a minute, how can we validate this input?  Haven’t we have removed the required attribute from our the tag? If you look back at the code for the form model, you see the following mapping for the name control:
 ```javascript 
 'name': [this.exercise.name, Validators.required],
 ``` 
-The second element in the mapping array assigns the required validator to the name form control.  This means that we don’t have to add anything to our template; instead the form control itself is attached to the template with a required validator. The ability to add a validator in our code enables us to conveniently add validators outside our template.  It is especially useful when it comes to writing custom validators with complex logic behind them. 
+The second element in the mapping array assigns the required validator to the name form control.   
 #### Adding Dynamic Form Controls 
-As we mentioned earlier, the Exercise form that we are building requires that we allow the user to add one or more videos to the exercise.  Since we don’t know how many videos the user may want to add, we will have to build the input fields for these videos dynamically as the user clicks the Add Video button.  Here’s how it will look:
+ Since we don’t know how many videos the user may want to add, we will have to build the input fields for these videos dynamically as the user clicks the Add Video button.  Here’s how it will look:
 
 ![alt text](Dynamic.PNG "Dynamic Controls")
 
-We have already seen the code in our component class that we use to do this. Now let’s take a look at how it is implemented in our template. 
 We first use ngFor to loop through our list of videos. Then we add assign the index in our videos to a local variable i. No surprises so far.
 ```javascript  
 <div *ngFor="let video of videoArray.controls; let i=index" class="form-group">

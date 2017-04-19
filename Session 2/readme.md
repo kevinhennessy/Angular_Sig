@@ -349,7 +349,7 @@ Finally, go back to app.routes.ts and remove the import of the WorkoutBuilderCom
 > **Finished code at at [Checkpoint 4.3](https://github.com/chandermani/angular2byexample/tree/checkpoint4.3). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.3.zip).**
 
 In this section we'll be adding the code for lazy loading. 
-* First, modify app.routes.ts to add the following separate route configuration under the existing imports:
+* First, modify **app.routes.ts** to add the following separate route configuration under the existing imports:
 ```javascript
 const workoutBuilderRoutes: Routes = [
   {
@@ -378,7 +378,7 @@ export const workoutBuilderRoutes: Routes = [
     } 
 ];
 ```
-* Finally go back to the app-module.ts and remove the WorkoutBuilderModule import in the @NgModule configuration in that file.
+* Finally go back to the **app-module.ts** and remove the WorkoutBuilderModule import in the @NgModule configuration in that file.
 * **Run the app**
 
 ### Integrating Sub and Side Level Navigation

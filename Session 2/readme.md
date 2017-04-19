@@ -157,7 +157,7 @@ We setup routing in our application by making the following changes:
       });
     ```
   
-### Getting Started
+### Child Routing and Lazy Loading
 > **Start at [Checkpoint 4.1](https://github.com/chandermani/angular2byexample/tree/checkpoint4.1). Zip file is [here](https://github.com/chandermani/angular2byexample/archive/checkpoint4.1.zip).**
 
 Note the following changes from the previous checkpoint:
@@ -1021,4 +1021,4 @@ buildExerciseForm(){
 ### Homework
 * Read Chapter 5
 * Grab the repo for Checkpoint 5.1
-* Sign up for a Mongo Lab account 
+* Sign up for a [Mongo Lab](https://mlab.com/) account  

@@ -19,7 +19,7 @@
   - Template Driven Forms
   - Model Driven Forms
   
-**[Third Session](https://github.com/kevinhennessy/Angular_Sig/tree/master/Session%202) – May 3 - Chapter 5**
+**[Third Session](https://github.com/kevinhennessy/Angular_Sig/tree/master/Session%203) – May 3 - Chapter 5**
 - Dependency Injection
 - HTTP Module and RxJs 
 

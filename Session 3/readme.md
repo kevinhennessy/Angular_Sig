@@ -9,7 +9,7 @@ This session assumes you have read chapter 5 of the book.
 ## Depedency Injection
 ### Why Dependency Injection
 * It's a coding pattern in which a class receives its dependencies from external sources rather than creating them itself.
-    * It is a way to have one class that gets a reference to another class that is injected somehow.
+    * It is a way to have one class that gets a reference to another class that is injected somehow. The "somehow" is a DI container.
     * A class should have no knowledge of what it needs to use – we don’t want to know a ton about our collaborators – it's not its job to instantiate its collaborators.
 * Testing is another issue – we want to just test the code within the class not its dependencies 
 * Injecting is done through constructor assignments in our components.
@@ -19,17 +19,17 @@ This session assumes you have read chapter 5 of the book.
     * It uses **providers** for dependency injection.
     * Dependency injector creates the instance to be injected
 * Where to set providers
-    * In the root module
+    * In the root module - this is the default place to configure DI providers
     * In other modules
         * they will still be available throughout the app
         * exception for lazy loaded modules
-    * In component or decorative decorator (Chapter 6 -- pp 334-37) using
+    * In a component or directive decorator (Chapter 6 -- pp 334-37) using
         * **providers** property - available to its view children, content children and their descendants
         * **viewProviders** property - can only be injected in the view children
 * **Services** are assigned to **providers**
-    * A service is nothing more than a class in Angular. 
-    * It remains nothing more than a class until you register it with an Angular injector.
-    * All services in Angular are objects – so I can take any JavaScript object and use it as a service        
+    * You can take any JavaScript object and use it as a service
+    * But typically a service is a class    
+    * It remains nothing more than a class until you register it with an Angular injector.       
 * We assign services to providers in four ways
     1. Default that works in 99% of cases.
         * See the example in **services.module.ts** in the trainer/src/components/services folder.
@@ -67,9 +67,10 @@ This session assumes you have read chapter 5 of the book.
     3. useFactory is another option
     4. useExisting allows us to use an existing object instance
 * How do we inject dependencies into our components?
-    * We typically inject them into the constructor like so:
+    * We inject them into the constructor like so:
         ```javascript
         constructor(public workoutService:WorkoutService){}
         ```
-    * Angular uses the TypeScript type definition (here WorkoutService) as a token to lookup our service in the DI container.
-    * Angular first looks in the component for a provider for the type and if not found then moves up the component tree all the way to the NgModule to find it.
+    * Angular uses the TypeScript type definitions (here WorkoutService) as a token to lookup our service in the DI container.
+        * You cannot use interfaces with DI in Angular
+    * Angular first looks in the component for a provider for the type and if not found then moves up the component tree all the way to the root injector to find it.

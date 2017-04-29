@@ -19,6 +19,7 @@ This session assumes you have read chapter 5 of the book.
 * Each component,  directive and module has a **provider** property.
 * **Services** are assigned to providers.
 * The **provider** creates an instance of the service to be injected.
+* A **provider** is an instruction that describes how an object for a certain token is created.
 * The **service** is then injected into a component (or directive) through constructor assignment.
 #### Getting Started with Angular Dependency Injection
 * You don't have to create an Angular injector. Angular creates an application-wide injector for you during the bootstrap process.
@@ -38,6 +39,11 @@ This session assumes you have read chapter 5 of the book.
 * But typically a service is a class
 * A service is a singleton    
 * It remains nothing more than a class until you register it with a provider.
+* Use the @Injectable() decorator on a service class that has its own dependencies. It enables Angular to identify the types of its dependencies.
+    ```javascript
+    @Injectable()
+    export class WorkoutHistoryTracker {
+    ```
 #### Four ways to register services with providers
 1. Default that works in 99% of cases.
     * See the example in **services.module.ts** in the trainer/src/components/services folder.
@@ -73,21 +79,36 @@ This session assumes you have read chapter 5 of the book.
             })
         }));
         ``` 
-2. useValue see toastr example - 
-3. useFactory is another option
-4. useExisting allows us to use an existing object instance
-* How do we inject dependencies into our components?
-    * First import the class for our dependency from its file:
+2. **useValue** allows us to register a specific object/primitive. Value providers come in handy to register common app configurations:
     ```javascript
-    import { WorkoutService } from "../../../services/workout-service";    
+    { provide: TITLE, useValue:   'Hero of the Month' },
     ```
+3. **useFactory** allows us to create a dependency object with a factory function whose inputs are some combination of injected services and local state.
+    ```javascript
+    { provide: RUNNERS_UP,    useFactory:  runnersUpFactory(2), deps: [Hero, HeroService] }
+    ```
+4. **useExisting** allows us to map one token to another. In effect, the first token is an alias for the service associated with the second token, creating two ways to access the same service object. Here is an example from Chapter 6 where we are building a custom directive:
+    ```javascript
+    @Directive({
+    selector: `[a2beRemoteValidator][ngModel]`,
+    providers:[{ provide: NG_ASYNC_VALIDATORS, useExisting: RemoteValidatorDirective, multi: true }]
+    })
+    ```
+Here we are making our custom directive - RemoteValidatorDirective - an alias for the built-in NG_ASYNC_VALIDATORS entry in the providers.
+#### TODO: Something about tokens - Opaque Tokens - Injection Tokens
+#### TODO: Qualify dependency lookup with @Optional() and @Host()
+#### How do we inject dependencies into our components?
+* First import the class for our dependency from its file:
+```javascript
+import { WorkoutService } from "../../../services/workout-service";    
+```
 
-    * Then inject it into the constructor like so:
-    ```javascript
-    constructor(public workoutService:WorkoutService){}
-    ```
-    * Angular uses the TypeScript type declaration (here WorkoutService) as a token to lookup our service in the DI container.
-        * You cannot use interfaces with DI in Angular
-    * Angular first looks in the component for a provider for the type and if not found then moves up the component tree all the way to the root injector to find it.
-    * OpaqueToken & @Inject() ties in with useValue??
-    * @Injectable
+* Then inject it into the constructor like so:
+```javascript
+constructor(public workoutService:WorkoutService){}
+```
+* Angular uses the TypeScript type declaration (here WorkoutService) as a token to lookup our service in the DI container.
+    * You cannot use interfaces with DI in Angular
+    * Note: we are not using strings but types as the key.
+* Angular first looks in the component for a provider for the type and if not found then moves up the component tree all the way to the root injector to find it.
+* OpaqueToken & @Inject() ties in with useValue??

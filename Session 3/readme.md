@@ -176,3 +176,9 @@ constructor(@Optional() private logger: Logger) {
 }
 ```
 When using @Optional(), your code must be prepared for a null value. If you don't register a logger somewhere up the line, the injector will set the value of logger to null.
+
+Some relevant links:
+
+[Angular documentation on Dependency Injection](https://angular.io/docs/ts/latest/guide/dependency-injection.html)
+
+[Joe Eames on Dependency Injection](https://www.youtube.com/watch?v=SGrUGWxpNfU)

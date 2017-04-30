@@ -45,7 +45,7 @@ This session assumes you have read chapter 5 of the book.
     export class WorkoutHistoryTracker {
     ```
 #### Four ways to register services with providers
-1. Default that works in 99% of cases.
+1. **useClass** -- default that works in 99% of cases.
     * See the example in **services.module.ts** in the trainer/src/components/services folder.
     * We import the service class into the root or other module (not an instance -- the dependency injector does that). 
         ```javascript
@@ -94,9 +94,8 @@ This session assumes you have read chapter 5 of the book.
     providers:[{ provide: NG_ASYNC_VALIDATORS, useExisting: RemoteValidatorDirective, multi: true }]
     })
     ```
-Here we are making our custom directive - RemoteValidatorDirective - an alias for the built-in NG_ASYNC_VALIDATORS entry in the providers.
-#### TODO: Something about tokens - Opaque Tokens - Injection Tokens
-#### TODO: Qualify dependency lookup with @Optional() and @Host()
+    Here we are making our custom directive - RemoteValidatorDirective - an alias for the built-in NG_ASYNC_VALIDATORS entry in the providers.
+
 #### How do we inject dependencies into our components?
 * First import the class for our dependency from its file:
 ```javascript
@@ -108,7 +107,72 @@ import { WorkoutService } from "../../../services/workout-service";
 constructor(public workoutService:WorkoutService){}
 ```
 * Angular uses the TypeScript type declaration (here WorkoutService) as a token to lookup our service in the DI container.
-    * You cannot use interfaces with DI in Angular
+    * You can't use an interface as a provider token because interfaces are not JavaScript objects. 
     * Note: we are not using strings but types as the key.
 * Angular first looks in the component for a provider for the type and if not found then moves up the component tree all the way to the root injector to find it.
-* OpaqueToken & @Inject() ties in with useValue??
+#### String tokens
+Instead of class, we can use a string literal to identify a dependency. 
+
+We can register the WorkoutHistoryTracker dependency using string token as follows:
+```javascript
+{provide:"MyHistoryTracker", useClass: WorkoutHistoryTracker })
+```
+If we now do:
+```javascript
+constructor(private tracker: WorkoutHistoryTracker)
+```
+Angular fails to inject the dependency. Since the WorkoutHistoryTracker above was registered with a string token, the token needs to be provided during injection too.
+
+To inject a dependency registered using string token, we need to use the @Inject decorator. This works perfectly fine:
+```javascript
+constructor(@Inject("MyHistoryTracker") 
+private tracker: WorkoutHistoryTracker)
+```
+When @Inject() is not present, the Injector uses the type name of the parameter (class token).
+
+String tokens are useful when registering instances or objects that need to be injected. The app configuration registration examples that we shared earlier can be rewritten using string token, if there is no class such as AppConfig.
+```javascript
+{ provide: "AppConfiguration", useValue: {name:'Test App', gridSetting: {…} …});
+```
+And then injected using @Inject:
+```javascript
+constructor(@Inject(“AppConfiguration”) config:any)
+```
+#### Injection Tokens - alternative to using strings
+One solution to choosing a provider token for non-class dependencies is to define and use an InjectionToken. The definition of such a token looks like this:
+
+```javascript
+import { InjectionToken } from '@angular/core';
+
+export let APP_CONFIG = new InjectionToken<AppConfig>('app.config');
+```
+The type parameter, while optional, conveys the dependency's type to developers and tooling. The token description is another developer aid.
+
+Register the dependency provider using the InjectionToken object:
+
+```javascript
+providers: [{ provide: APP_CONFIG, useValue: HERO_DI_CONFIG }]
+```
+Now you can inject the configuration object into any constructor that needs it, with the help of an @Inject decorator:
+
+```javascript
+constructor(@Inject(APP_CONFIG) config: AppConfig) {
+  this.title = config.title;
+}
+```
+Although the AppConfig interface plays no role in dependency injection, it supports typing of the configuration object within the class.
+#### Optional dependencies
+
+The HeroService requires a Logger, but what if it could get by without a logger? You can tell Angular that the dependency is optional by annotating the constructor argument with @Optional():
+
+```javascript
+import { Optional } from '@angular/core';
+```
+```javascript
+constructor(@Optional() private logger: Logger) {
+  if (this.logger) {
+    this.logger.log(some_message);
+  }
+}
+```
+When using @Optional(), your code must be prepared for a null value. If you don't register a logger somewhere up the line, the injector will set the value of logger to null.

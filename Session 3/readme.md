@@ -16,24 +16,24 @@ This session assumes you have read chapter 5 of the book.
 ### Angular Dependency Injection -- Chapter 2 -- pp 130-141
 #### Angular has its own built-in dependency injection framework.
 * It uses **providers** for dependency injection.
+* A **provider** is an instruction that describes how an object for a certain token is created.
 * Each component,  directive and module has a **provider** property.
 * **Services** are assigned to providers.
-* The **provider** creates an instance of the service to be injected.
-* A **provider** is an instruction that describes how an object for a certain token is created.
-* The **service** is then injected into a component (or directive) through constructor assignment.
+* The **provider** creates an instance of the **service** to be injected.
+* The **injector** then injects the instance of the service into a component (or directive) through constructor assignment.
 #### Getting Started with Angular Dependency Injection
-* You don't have to create an Angular injector. Angular creates an application-wide injector for you during the bootstrap process.
- * You do have to configure the injector by registering the providers that create the services the application requires.
+* You don't have to create an Angular injector. Angular creates an application-wide **injector** for you during the bootstrap process.
+* Angular takes care of creating and calling **injectors** when it creates components. Each component instance has its own injector. 
+* You do have to configure the injector by registering the **providers** that create the services the application requires.
 #### Registering providers
 * In an **NgModule**
     * A provider registered here will be accessible in the entire application
     * There is an exception for lazy loaded modules. For a lazy-loaded module, Angular creates a child injector and adds the module's providers to the child injector.
 * In a component or directive decorator (Chapter 6 -- pp 334-37) using
-    * **providers** property - available to its view children, content children and their descendants
-    * **viewProviders** property - can only be injected in the view children
+    * **providers** property - available to its view children, content children and their descendants.
+    * **viewProviders** property - can only be injected in the view children (not available for directives).
 * In general, prefer registering feature-specific providers in modules to registering in components.
-* Do not specify app-wide singleton providers in a shared module. A lazy-loaded module that imports that shared module makes its own copy of the service.
- 
+* Do not specify app-wide singleton providers in a shared module. A lazy-loaded module that imports that shared module makes its own copy of the service. 
 #### What are services?
 * You can take any JavaScript object and use it as a service
 * But typically a service is a class
@@ -110,6 +110,12 @@ constructor(public workoutService:WorkoutService){}
     * You can't use an interface as a provider token because interfaces are not JavaScript objects. 
     * Note: we are not using strings but types as the key.
 * Angular first looks in the component for a provider for the type and if not found then moves up the component tree all the way to the root injector to find it.
+* You can use the **@Host** decorator to make sure the lookup ends with the host component. The host component is typically the component requesting the dependency. But when this component is projected into a parent component, that parent component becomes the host.
+#### Dependency Injection Tokens
+* When you register a **provider** with an **injector**, you associate that provider with a dependency injection **token**. 
+* The **injector** maintains an internal token-provider map that it references when asked for a dependency. 
+* The **token** is the key to the map.
+* Using a class type as a token is the easiest way to go but we can also use strings and injection tokens
 #### String tokens
 Instead of class, we can use a string literal to identify a dependency. 
 
@@ -128,7 +134,7 @@ To inject a dependency registered using string token, we need to use the @Inject
 constructor(@Inject("MyHistoryTracker") 
 private tracker: WorkoutHistoryTracker)
 ```
-When @Inject() is not present, the Injector uses the type name of the parameter (class token).
+When **@Inject()** is not present, the Injector uses the type name of the parameter (class token).
 
 String tokens are useful when registering instances or objects that need to be injected. The app configuration registration examples that we shared earlier can be rewritten using string token, if there is no class such as AppConfig.
 ```javascript
@@ -162,8 +168,7 @@ constructor(@Inject(APP_CONFIG) config: AppConfig) {
 ```
 Although the AppConfig interface plays no role in dependency injection, it supports typing of the configuration object within the class.
 #### Optional dependencies
-
-The HeroService requires a Logger, but what if it could get by without a logger? You can tell Angular that the dependency is optional by annotating the constructor argument with @Optional():
+You can tell Angular that the dependency is optional by annotating the constructor argument with @Optional():
 
 ```javascript
 import { Optional } from '@angular/core';
@@ -175,10 +180,17 @@ constructor(@Optional() private logger: Logger) {
   }
 }
 ```
-When using @Optional(), your code must be prepared for a null value. If you don't register a logger somewhere up the line, the injector will set the value of logger to null.
+When using **@Optional()**, your code must be prepared for a null value. If you don't register a logger somewhere up the line, the injector will set the value of logger to null.
+
+#### **TODO** Some gotchas and guidance:
+* Prefer modules over components for configuring your providers
+* Do not configure providers in shared modules
+* Use insertion tokens instead of strings - this prevents naming collisions
+
+#### **TODO** Let's look at how the application is managing its dependencies   
 
 Some relevant links:
 
-[Angular documentation on Dependency Injection](https://angular.io/docs/ts/latest/guide/dependency-injection.html)
+Angular documentation on Dependency Injection: [https://angular.io/docs/ts/latest/guide/dependency-injection.html](https://angular.io/docs/ts/latest/guide/dependency-injection.html)
 
-[Joe Eames on Dependency Injection](https://www.youtube.com/watch?v=SGrUGWxpNfU)
+Joe Eames on Dependency Injection: [https://www.youtube.com/watch?v=SGrUGWxpNfU](https://www.youtube.com/watch?v=SGrUGWxpNfU)

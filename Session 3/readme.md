@@ -14,6 +14,14 @@ This session assumes you have read chapter 5 of the book.
 * **Dependency injection** is a way to have one class that gets a reference to another class that is injected somehow. 
 * The "somehow" is a **dependency injection framework**.
 ### Angular Dependency Injection -- Chapter 2 -- pp 130-141
+#### It's Easy, Easy, Easy!
+* Dependency injection is wired into the Angular framework and used everywhere.
+* Angular takes care of creating and calling injectors when it creates components for through HTML markup, as in 
+```javascript
+<sub-nav></sub-nav>
+``` 
+* Or after navigating to a component with the router. 
+* If you let Angular do its job, you'll enjoy the benefits of automated dependency injection.
 #### Angular has its own built-in dependency injection framework.
 * It uses **providers** for dependency injection.
 * A **provider** is an instruction that describes how an object for a certain token is created.
@@ -21,6 +29,7 @@ This session assumes you have read chapter 5 of the book.
 * **Services** are assigned to providers.
 * The **provider** creates an instance of the **service** to be injected.
 * The **injector** then injects the instance of the service into a component (or directive) through constructor assignment.
+![alt text](DependencyInjection.png "Dependency Injection")
 #### Getting Started with Angular Dependency Injection
 * You don't have to create an Angular injector. Angular creates an application-wide **injector** for you during the bootstrap process.
 * Angular takes care of creating and calling **injectors** when it creates components. Each component instance has its own injector. 
@@ -30,8 +39,9 @@ This session assumes you have read chapter 5 of the book.
     * A provider registered here will be accessible in the entire application
     * There is an exception for lazy loaded modules. For a lazy-loaded module, Angular creates a child injector and adds the module's providers to the child injector.
 * In a component or directive decorator (Chapter 6 -- pp 334-37) using
-    * **providers** property - available to its view children, content children and their descendants.
+    * **providers** property - is only available to its view children, content children and their descendants.
     * **viewProviders** property - can only be injected in the view children (not available for directives).
+    * Registering at a component level means you get a new instance of the service with each new instance of that component. This is called sandboxing.
 * In general, prefer registering feature-specific providers in modules to registering in components.
 * Do not specify app-wide singleton providers in a shared module. A lazy-loaded module that imports that shared module makes its own copy of the service. 
 #### What are services?

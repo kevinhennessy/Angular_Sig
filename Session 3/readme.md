@@ -22,6 +22,8 @@ This session assumes you have read chapter 5 of the book.
 ``` 
 * Or after navigating to a component with the router. 
 * If you let Angular do its job, you'll enjoy the benefits of automated dependency injection.
+* We will concentrate on using DI to inject services into our components.<br />
+    ![alt text](dependency-injection.png "Dependency Injection")
 #### Angular has its own built-in dependency injection framework.
 * It uses **providers** for dependency injection.
 * A **provider** is an instruction that describes how an object for a certain token is created.
@@ -192,12 +194,12 @@ constructor(@Optional() private logger: Logger) {
 ```
 When using **@Optional()**, your code must be prepared for a null value. If you don't register a logger somewhere up the line, the injector will set the value of logger to null.
 
-#### **TODO** Some gotchas and guidance:
+#### Some gotchas and guidance:
 * Prefer modules over components for configuring your providers
 * Do not configure providers in shared modules
 * Use insertion tokens instead of strings - this prevents naming collisions
 
-#### **TODO** Let's look at how the application is managing its dependencies   
+#### Let's look at how the application is managing its dependencies   
 
 Some relevant links:
 

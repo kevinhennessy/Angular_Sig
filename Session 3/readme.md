@@ -6,7 +6,68 @@ In this session we will be working with a series of checkpoints for Chapter 5 of
 ## Pre-reqs
 This session assumes you have read chapter 5 of the book.
 
-## Depedency Injection
+## Getting set up with Personal Trainer
+
+### Project Setup
+Make sure you have node and git installed.  In your favorite local folder: clone the source repository, install live-server, install gulp, install packages, checkout the starting branch, and run the app:
+
+```
+$ git clone https://github.com/chandermani/angular2byexample.git
+
+$ npm install -g gulp
+
+$ cd angular2byexample/trainer
+
+$ npm install
+
+$ git checkout checkpoint5.1
+
+$ gulp play
+```
+
+Now open the application folder in your favorite javascript editor (VS Code, Sublime, Atom, WebStorm, etc).
+
+> **Tip: It is strongly encouraged for you to use git to pull the application code to your local workstation.**  
+This will make it much easier to track your changes, move between checkpoints, and restart if necessary.  However, if you don't have git installed you can pull down the code base at any checkpoint as a zip file: [https://github.com/chandermani/angular2byexample/archive/checkpoint5.1.zip](https://github.com/chandermani/angular2byexample/archive/checkpoint5.1.zip) &leftarrow; **Substitute any checkpoint number**
+
+### Personal Trainer
+7 Minute Workout is an exercise/workout plan that requires us to perform a set of twelve exercises in quick succession within the seven minute time span. 7 Minute Workout has become quite popular due to its benefits and the short duration of the workout. We cannot confirm or refute the claims but doing any form of strenuous physical activity is better than doing nothing at all. If you are interested to know more about the workout, then check out [http://well.blogs.nytimes.com/2013/05/09/the-scientific-7-minute-workout/](http://well.blogs.nytimes.com/2013/05/09/the-scientific-7-minute-workout/).
+
+Chapter four adds even more functionality to the 7 Minute Workout application by turning it into a Personal Trainer.   The Personal Trainer application not only allows us to run the 7 minute workout, but also to add our own exercises and workouts.  To do this we are going to add a Workout Builder.
+
+### Using git Branches for Checkpoints
+The code in the source repository progresses through the exercises outlined in the book using git branches.  As we proceed through these exercises below we will use these branches walk through different steps in the process.  If you get behind or can't get one section working, you can always catch up by moving to the next branch.  As shown above you can move to a new branch using the git checkout command. 
+```
+$ git checkout checkpoint5.1
+```
+
+During this presentation we will be working with checkpoint 7.1 for dependency injection and 5.1-5.4 for HTTP Modules and Observables.
+
+### Use of Gulp for builds
+Gulp is used in the book and this presentation as a rudimentary build system for our application.  It provides a build pipeline which coordinates the typescript transpilation, startup of the web server, and live reloading.  This is a very simple build pipeline and is used only to facilitate the learning of Angular concepts.  A detailed discussion of the build pipeline is outside the scope of this presentation.  There are a myriad of choices for setting up Angular 2 build pipelines and you would likely want to use something different in your production application.  Here is more information about available tools and recommendataions from the Angular team:
+
+[https://angular.io/docs/ts/latest/guide/deployment.html](https://angular.io/docs/ts/latest/guide/deployment.html)
+
+### MongoDB for Persistance
+
+To demonstrate data persistance in Angular, we are using a MongoDB on [https://mlab.com](https://mlab.com)
+
+Setup instructions for Mongo may be found in the book at the very beginning of Chapter 5.  Since the book was publish mongolab has changed their name to mlab.  So you would use the url: [https://mlab.com](https://mlab.com) instead.
+
+#### Important Safety Tip!
+
+**You should never build a real production application which connects directly to MongoDB from a client-side framework such as Angular.**  
+
+The book uses an API key for direct access to your mlab database.  This is for demonstration purposes only.  **It is recommended that you enable API access to your account only while you are working with the examples.  You should disable this access when you are done to ensure that your account is not attacked.**
+
+**Always use a server-side application to authorize and control access to your database.**  It is strongly recommended that you use a language specific Mongo driver and two factor authentication when working with databases.
+
+From the mlab documentation:
+
+```
+"Your API key will give full access to all data within the databases belonging to your mLab account. If you distribute it to untrusted individuals, they can gain access to your account and your data. We have seen customers distribute mobile and AJAX-based web applications to their end users. Doing this will expose your account to attack. Such clients are appropriate only when you can control their distribution to just mLab account users."
+```
+
 ### What is Dependency Injection?
 * It's a coding pattern in which a class receives its dependencies from external sources rather than creating them itself.
     * A class should have no knowledge of what it needs to use – we don’t want to know a ton about our collaborators – it's not its job to instantiate its collaborators.

@@ -206,3 +206,296 @@ Some relevant links:
 Angular documentation on Dependency Injection: [https://angular.io/docs/ts/latest/guide/dependency-injection.html](https://angular.io/docs/ts/latest/guide/dependency-injection.html)
 
 Joe Eames on Dependency Injection: [https://www.youtube.com/watch?v=SGrUGWxpNfU](https://www.youtube.com/watch?v=SGrUGWxpNfU)
+
+## HTTP Module
+
+<blockquote style="background-color: blue; width:175px;"><em>$ git checkout checkpoint5.1</em></blockquote>
+
+#### Add HTTP Module and RxJS packages
+In package.json we are importing both the RxJS and HTTP Module packages:
+```javascript
+ "dependencies": {
+     ...
+   "@angular/http": "2.0.0", 
+     ...
+   "rxjs": "5.0.0-beta.12",
+     ...
+  },
+```
+
+#### Add the HTTP module to our project
+The Angular HTTP module is included in the Angular bundles that you have already installed. To use it, we need to import it into app.module.ts, like so:
+```javascript
+import { HttpModule } from '@angular/http';
+. . .
+@NgModule({
+  imports: [
+. . .
+    HttpModule,
+. . .
+})
+```
+
+#### Add the API Connection Information to workout-service.ts.
+In the class definition, add the following properties, which include a workout property and ones that set the URL for the collections in our Mongo database and the key to that database as well as another property: params, which sets up the API key as a query string for API access:
+```javascript
+workout: WorkoutPlan;
+collectionsUrl = "https://api.mongolab.com/api/1/databases/<dbname>/collections";
+apiKey = <key>
+params = '?apiKey=' + this._apiKey;
+```
+We replace the <dbname> and <key> tokens with the database name and API key of the database that we provisioned earlier in the chapter.
+
+#### Inject the HTTP module in workoutservice.ts
+```javascript
+constructor(public http: Http) {
+}
+```
+
+#### Change the getExercises() method to call the http module:
+```
+getExercises(){
+    return this.http.get(this.collectionsUrl + '/exercises' + this.params)
+        .map((res: Response) => <Exercise[]>res.json())
+        .catch(WorkoutService.handleError);
+}
+```
+
+#### Update the code in the ngOnInit method in exercises.component.ts to the following:
+```javascript
+ngOnInit() {
+    this.workoutService.getExercises()
+        .subscribe(
+            exerciseList=> {
+                this.exerciseList = exerciseList;
+            },
+            (err: any) => console.error(err)
+        );
+}
+```
+<blockquote style="background-color: blue; width:175px;"><em>$ git checkout checkpoint5.2</em></blockquote>
+
+#### Mapping server responses to local classes
+There is a small glitch in the workout list page. We can easily spot it if we look carefully at any list item (in fact, there is only one item): The total duration is not being calculated.  Since we are retrieving data from the server, we bind a simple array of JavaScript objects to the view, which for obvious reasons has no calculation logic.  We can fix this problem by mapping a server response to our model class objects and returning them to any upstream caller.
+
+Mapping a server response to the model data becomes imperative if:
+
+- Our model defines any methods
+- A stored model is different from its representation in code
+- The same model class is used to represent data from different sources (this can happen for mashups, where we pull data from disparate sources)
+
+The two major differences between the model and server data are as follows:
+
+- The model defines the totalWorkoutDuration method.
+- The exercises array representation also differs. The exercises array of the model contains the full Exercise object while the server data stores just the exercise identifier or name.
+
+Let's rewrite the getWorkouts method in the workout-service.ts file to add the second map:
+```javascript
+getWorkouts() {
+    return this.http.get(this.collectionsUrl + '/workouts' + this.params)
+        .map((res:Response) => <WorkoutPlan[]>res.json())
+        .map((workouts:Array<any>) => {
+            let result:Array<WorkoutPlan> = [];
+            if (workouts) {
+                workouts.forEach((workout) => {
+                    result.push(
+                        new WorkoutPlan(
+                            workout.name,
+                            workout.title,
+                            workout.restBetweenExercise,
+                            workout.exercises,
+                            workout.description
+                        ));
+                });
+            }
+
+            return result;
+        })
+        .catch(WorkoutService.handleError);
+}
+```
+
+#### Using fork join
+
+workout-service.ts:
+```javascript
+import 'rxjs/add/observable/forkJoin';
+
+getWorkout(workoutName:string) {
+    return Observable.forkJoin(
+        this.http.get(this.collectionsUrl + '/exercises' +
+        this.params).map((res:Response) => <Exercise[]>res.json()),
+        this.http.get(this.collectionsUrl + '/workouts/' +
+        workoutName + this.params).map((res:Response) =>
+       <WorkoutPlan>res.json())
+    ).map(
+        (data:any) => {
+            let allExercises = data[0];
+            let workout = new WorkoutPlan(
+                data[1].name,
+                data[1].title,
+                data[1].restBetweenExercise,
+                data[1].exercises,
+                data[1].description
+            )
+            workout.exercises.forEach(
+                (exercisePlan:any) => exercisePlan.exercise =
+                 allExercises.find(
+                    (x:any) => x.name === exercisePlan.name
+                )
+            )
+            return workout;
+        }
+    )
+    .catch(WorkoutService.handleError);
+}
+```
+
+#### Loading workouts on route changes in workout.component.ts
+The Workout component uses its ngOnit life cycle hook to load a new or existing workout. When the route successfully resolves to this component, ngOnit uses the injected WorkoutBuilderService to load the workout. Here is what the method looks like:
+```javascript
+ngOnInit() {
+    this.sub = this.route.params.subscribe(params => {
+        if (!params['id']) {
+            this.workout = this.workoutBuilderService.startBuildingNew();
+        } else {
+            let workoutName = params['id'];
+            this.workoutBuilderService.startBuildingExisting(workoutName)
+                .subscribe(
+                    (data:WorkoutPlan) => {
+                        this.workout = <WorkoutPlan>data;
+                        if (!this.workout) {
+                            this.router.navigate(['/builder/workouts']);
+                        } else {
+                            this.workoutBuilderService.buildingWorkout =
+                            this.workout;
+                        }
+                    },
+                    (err:any) => {
+                        if (err.status === 404) {
+                            this.router.navigate(['/builder/workouts'])
+                        } else {
+                            console.error(err)
+                        }
+                    }
+                );
+        }
+    });
+}
+```
+
+If you're holding a reference to a subscription (as above), be sure to unsubscribe when you leave the component:
+
+```javascript
+    ngOnDestroy() {
+        this.sub.unsubscribe();
+    }
+```
+
+<blockquote style="background-color: blue; width:175px;"><em>$ git checkout checkpoint5.3</em></blockquote>
+
+#### Performing CRUD on exercises/workouts
+When it comes to create, read, update, and delete (CRUD) operations, all save, update, and delete methods need to be converted to the Observable pattern.
+
+Creating a new workout
+Taking the bottom-up approach, the first thing that needs to be fixed is WorkoutService. Update the addWorkout method in workout-service.ts as shown in the following code:
+```javascript
+addWorkout(workout:any) {
+  let workoutExercises:any = [];
+  workout.exercises.forEach((exercisePlan:any) => {
+    workoutExercises.push({name: exercisePlan.exercise.name, duration:exercisePlan.duration})
+  });
+  let body = {
+    "_id": workout.name,
+    "exercises": workoutExercises,
+    "name": workout.name,
+    "title": workout.title,
+    "description": workout.description,
+    "restBetweenExercise": workout.restBetweenExercise
+  };
+  return this.http.post(this.collectionsUrl + '/workouts' + this.params, body)
+  .map((res:Response) => res.json())
+  .catch(WorkoutService.handleError)
+}
+```
+**Important Safety Tip**: Don't use the name as the ID in a production application.  A server generated surrogate key should be used instead.
+
+#### Updating a workout
+Why not try to implement the update operation? The updateWorkout method can be fixed in the same manner, the only difference being that the HTTP module's put method is required:
+```javascript
+updateWorkout(workout:WorkoutPlan) {
+  let workoutExercises:any = [];
+  workout.exercises.forEach((exercisePlan:any) => {
+    workoutExercises.push({name: exercisePlan.exercise.name,
+    duration:exercisePlan.duration})
+  });
+  let body = {
+    "_id": workout.name,
+    "exercises": workoutExercises,
+    "name": workout.name,
+    "title": workout.title,
+    "description": workout.description,
+    "restBetweenExercise": workout.restBetweenExercise
+  };
+  return this.http.put(this.collectionsUrl + '/workouts/' +
+  workout.name + this.params, body)
+  .map((res:Response) => res.json())
+  .catch(WorkoutService.handleError);
+}
+```
+#### Deleting a workout
+The last operation that needs to be fixed is deleting the workout. Here is a simple implementation where we call the HTTP module's delete method to delete the workout referenced by a specific URL:
+```javascript
+deleteWorkout(workoutName:string) {
+  return this.http.delete(this.collectionsUrl + '/workouts/' +
+  workoutName + this.params)
+  .map((res:Response) => res.json())
+  .catch(WorkoutService.handleError)
+}
+```
+Finally, the save code for the workout.component.ts is shown here:
+```javascript
+save(formWorkout:any) {
+  this.submitted = true;
+  if (!formWorkout.valid) return;
+  this.workoutBuilderService.save().subscribe(
+    success => this.router.navigate(['/builder/workouts']),
+    err => console.error(err)
+  );
+}
+```
+
+#### Using promises for HTTP requests
+The bulk of this chapter has focused on how the Angular HTTP client uses Observables as the default for XMLHttpRequests. This represents a significant change from the way things used to work. Many developers are familiar with using promises for asynchronous HTTP requests. With that being the case, Angular continues to support promises but just not as the default choice. A developer has to opt for promises in an XMLHttpRequest in order to be able to use them.
+
+For example, if we want to use promises with the getExercises method in WorkoutService (workout-service.ts), we will first need to import the RxJS toPromise operator:
+```javascript
+import 'rxjs/add/operator/toPromise';
+```
+Then we will have to restructure the command as follows:
+```javascript
+getExercises() {
+  return this.http.get(this.collectionsUrl + '/exercises' + this.params)
+  .toPromise().then((res:Response) => <Exercise[]>res.json())
+  .catch(WorkoutService.handleError);
+} 
+```
+
+<blockquote style="background-color: blue; width:175px;"><em>$ git checkout checkpoint5.4</em></blockquote>
+
+#### The async pipe
+
+The async pipe is a much more powerful mechanism than other pipes. It takes an Observable or a promise as an input and subscribes to it automatically. It also handles the tear down of the subscription for an Observable without necessitating any further lines of code.
+
+First, change exerciseList from an array of exercises to an Observable of the same type in exercises.component.ts:
+```javascript
+public exerciseList:Observable<Exercise[]>;
+```
+Then modify the call to WorkoutService to get the exercises to eliminate the subscription:
+```javascript
+this.exerciseList = this.workoutService.getExercises();
+```
+Finally, open the template files for each of these components and add the async pipe to the *ngFor loop, like so in exercises.component.html:
+```javascript
+<div *ngFor="let exercise of exerciseList|async|orderBy:'title'">
+```

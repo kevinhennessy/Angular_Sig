@@ -156,6 +156,7 @@ And then injected using @Inject:
 ```javascript
 constructor(@Inject(“AppConfiguration”) config:any)
 ```
+A problem with string tokens is that they can be easily overwritten. In the Angular DI system that last one prevails.
 #### Injection Tokens - alternative to using strings
 One solution to choosing a provider token for non-class dependencies is to define and use an InjectionToken. The definition of such a token looks like this:
 

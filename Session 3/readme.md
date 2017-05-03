@@ -68,6 +68,7 @@ From the mlab documentation:
 "Your API key will give full access to all data within the databases belonging to your mLab account. If you distribute it to untrusted individuals, they can gain access to your account and your data. We have seen customers distribute mobile and AJAX-based web applications to their end users. Doing this will expose your account to attack. Such clients are appropriate only when you can control their distribution to just mLab account users."
 ```
 
+## Dependency Injection
 ### What is Dependency Injection?
 * It's a coding pattern in which a class receives its dependencies from external sources rather than creating them itself.
     * A class should have no knowledge of what it needs to use – we don’t want to know a ton about our collaborators – it's not its job to instantiate its collaborators.
@@ -104,7 +105,7 @@ From the mlab documentation:
 * In a component or directive decorator (Chapter 6 -- pp 334-37) using
     * **providers** property - is only available to its view children, content children and their descendants.
     * **viewProviders** property - can only be injected in the view children (not available for directives).
-    * Registering at a component level means you get a new instance of the service with each new instance of that component. This is called sandboxing.
+    * Registering at a component level means you get a new instance of the service with each new instance of that component. This is called **sandboxing**.
 * In general, prefer registering feature-specific providers in modules to registering in components.
 * Do not specify app-wide singleton providers in a shared module. A lazy-loaded module that imports that shared module makes its own copy of the service. 
 #### What are services?
@@ -561,3 +562,6 @@ Finally, open the template files for each of these components and add the async 
 ```javascript
 <div *ngFor="let exercise of exerciseList|async|orderBy:'title'">
 ```
+## Homework
+* Read Chapter 7
+* Grab the repo for Checkpoint 7.1 

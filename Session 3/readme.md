@@ -105,7 +105,7 @@ From the mlab documentation:
 * In a component or directive decorator (Chapter 6 -- pp 334-37) using
     * **providers** property - is only available to its view children, content children and their descendants.
     * **viewProviders** property - can only be injected in the view children (not available for directives).
-    * Registering at a component level means you get a new instance of the service with each new instance of that component. This is called **sandboxing**.
+    * Registering at the component level means you get a new instance of the service with each new instance of that component. This is called **sandboxing**.
 * In general, prefer registering feature-specific providers in modules to registering in components.
 * Do not specify app-wide singleton providers in a shared module. A lazy-loaded module that imports that shared module makes its own copy of the service. 
 #### What are services?
@@ -168,7 +168,7 @@ From the mlab documentation:
     providers:[{ provide: NG_ASYNC_VALIDATORS, useExisting: RemoteValidatorDirective, multi: true }]
     })
     ```
-    Here we are making our custom directive - RemoteValidatorDirective - an alias for the built-in NG_ASYNC_VALIDATORS entry in the providers.
+    Here we are making our custom directive - RemoteValidatorDirective - an alias for the built-in NG_ASYNC_VALIDATORS entry in the providers. Note the use of **multi: true** here. This indicates that the provider is a multi-provider, which means it returns a list of all registered providers. This allows us to add our RemoteValidatorDirective to the NG_ASYNC_VALIDATORS in the Angular platform.
 
 #### How do we inject dependencies into our components?
 * First import the class for our dependency from its file:

@@ -23,7 +23,7 @@
 - Dependency Injection
 - HTTP Module and RxJs 
 
-**[Fourth Session](https://github.com/kevinhennessy/Angular_Sig/tree/master/Session%203) – May 17 - Chapter 7**
+**[Fourth Session](https://github.com/kevinhennessy/Angular_Sig/tree/master/Session%204) – May 17 - Chapter 7**
 - Unit Testing
 - Using fakes/mocks in unit testing
 - E2E Testing Using CLI

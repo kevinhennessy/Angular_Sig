@@ -6,6 +6,8 @@ The repository for the book chapter is located at [github.com/chandermani/angula
 ## Testing in Angular
 ### Types of Testing
 * Unit Testing
+    * Isolated tests - test code only
+    * Integrated tests - test code and template
 * End-to-end testing
 ### The Angular testing ecosystem
 ![alt text](TestingEcosystem.png "Testing Ecosystem")

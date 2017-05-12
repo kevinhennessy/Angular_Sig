@@ -130,11 +130,100 @@ We are using the following conventions in setting up and naming our test files:
 * Create one test file for each Typescript file that we plan to test.
 * Name each of the test files with the name of the file under test plus **.spec**.
 * Place each test file in the directory where the file under test is located.
+
+Our file structure will then look like this:
+
+![alt text](TestFileStructure.png "Test File Structure")
 ### Unit testing Angular applications
 #### Unit testing pipes
-#### Running our test files 
+Pipes are the easiest to test as they have minimum or zero dependencies on other
+constructs. The SecondsToTimePipe that we created for Workout Runner (the 7 Minute
+Workout app) has no dependencies and can be easily unit-tested.
+```javascript
+import {SecondsToTimePipe} from "./seconds-to-time.pipe";
+describe('SecondsToTime pipe', () => {
+    let pipe:SecondsToTimePipe;
+    beforeEach(() => {
+        pipe = new SecondsToTimePipe();
+    });
+    it('should convert integer to time format', () => {
+        expect(pipe.transform(5)).toEqual('00:00:05');
+        expect(pipe.transform(65)).toEqual('00:01:05');
+        expect(pipe.transform(3610)).toEqual('01:00:10');
+    });
+});
+```
+We are using Jasmine syntax here:
+* First we wrap the test in a **describe** function that identifies the test. 
+* The first parameter of this function is a user-friendly description of the test. 
+* For the second parameter, we pass a lambda (fat arrow) function that will contain our test. 
+* Within the lambda we call Jasmine's **beforeEach** function and use this to
+inject an instance of our pipe.
+
+    >Since the beforeEach function runs before every test that is in our
+    **describe** function, we can use it for common code that will run in each of our tests. In this case, it is not strictly necessary since there is only one test.
+
+* Next, we call Jasmine's **it** function and pass it a title, along with three calls to Jasmine's **expect** function (Jasmine's name for assertions). 
+#### Running our test files
+Now it's time to run our tests using Karma. 
+
+* First we have to transpile our files from TypeScript to JavaScript. To do this, we start up our application itself in a terminal window by calling:
+    ```javascript
+    gulp play
+    ```
+* Next, we run Karma by executing the following command in a
+separate terminal window in the trainer folder:
+    ```javascript
+    karma start tests/karma.conf.js
+    ```
+* We should then see this output in the terminal window:
+
+    ![alt text](green-test.png "Passing Test")
+
+* The last line shows that our test passed successfully. 
+
+* To make sure that it is reporting the
+correct pass/fail results, let's make a change in the test to cause one of the expectations to
+fail. 
+* Change the time in the first expectation to 6 seconds rather than 5, like so:
+    ```javascript
+    expect(pipe.transform(5, [])).toEqual('00:00:06');
+    ```
+
+* We get the following error message:
+
+    ![alt text](red-test.png "Failing Test")
+
+* We also get a lengthy stack trace below this message and a final line that shows the overall results of our tests:
+
+    ![alt text](test-results.png "Test Results")
+* One thing you'll notice is that when we make the change to our test, we do not have to rerun Karma. Instead, it watches for any changes in our files and related tests and immediately reports success or failure whenever we make a change.
+
+To sum up, we'll be taking the following multi-step approach to executing all our tests.
+![alt text](TestExecution.png "Test Execution")
+
 ### Unit testing components
+Testing Angular components is more complicated than testing simple pipes or services.
+That is because Angular components are associated with views and also usually have more
+dependencies than services, filters, or directives.
 #### Angular testing utilities
+Because of their complexity, Angular has introduced utilities that enable us to test our components more easily. These testing utilities include the **TestBed** class and several helper functions in @angular/core/testing.
+
+**TestBed** has a **createComponent** method that returns a **ComponentFixture** containing several members and methods, including:
+* **debugElement**: For debugging a component
+* **componentInstance**: For accessing the component properties and methods
+* **nativeElement**: For accessing the view's markup and other DOM elements
+* **detectChanges**: For triggering the component's change detection cycle
+
+**ComponentFixture** also contains methods for overriding the view, directives, bindings,
+and providers of a component.
+
+**TestBed** has a method called **configureTestingModule** that we can use to set up our
+testing as its own module. This means we can bypass the initial bootstrap process and
+compile our components under test within out test files. 
+
+We can also use **TestBed** to specify
+additional dependencies and identify the providers that we will need.
 #### Managing Dependencies in our tests
 ### Unit testing WorkoutRunner Component
 ### Start unit testing

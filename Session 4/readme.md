@@ -226,11 +226,384 @@ compile our components under test within out test files.
 
 We can also use **TestBed** to specify
 additional dependencies and identify the providers that we will need.
-#### Managing Dependencies in our tests
-### Unit testing WorkoutRunner Component
+
 ### Start unit testing
-### Debugging unit tests in Karma
-### Unit testing WorkoutRunner Component continued
+#### Debugging unit tests in Karma
+### Managing Dependencies in our tests
+#### Unit testing WorkoutRunner Component
+##### MOCKING DEPENDENCIES - WORKOUT HISTORY TRACKER
+Angular allows us to mock our dependencies in a straightforward manner using simple classes. Let's start with mocking WorkoutHistoryTracker. To do that, add the following class just after the imports:
+
+```javascript
+class MockWorkoutHistoryTracker {
+    startTracking() {}
+    endTracking() {}
+    exerciseComplete() {}
+}
+```
+##### MOCKING DEPENDENCIES - WORKOUT SERVICE
+The workout service makes a remote call to retrieve the data that populates a workout. For unit-testing the workout runner, we will want to replace that call with a mock implementation that returns some static data that we can use to run the test. So we will add a third mock class, as follows:
+```javascript
+class MockWorkoutService {
+    sampleWorkout = new WorkoutPlan(
+         "testworkout",
+         "Test Workout",
+          40,
+          [
+              new ExercisePlan(new Exercise( "exercise1", "Exercise 1",
+              "Exercise 1 description",  "/image1/path",
+             "audio1/path"), 50),
+              new ExercisePlan(new Exercise( "exercise1", "Exercise 2",
+             "Exercise 2 description",  "/image2/path",
+             "audio2/path"), 30),
+              new ExercisePlan(new Exercise( "exercise1", "Exercise 3",
+             "Exercise 3 description",  "/image3/path",
+             "audio3/path"), 20)
+          ],
+          "This is a test workout"
+    );
+    getWorkout(name: string) {
+        return Observable.of(this.sampleWorkout);
+    }
+    totalWorkoutDuration(){
+        return 180;
+    };
+    export class MockRouter {
+    navigate = jasmine.createSpy('navigate');
+    }
+}
+```
+##### MOCKING DEPENDENCIES - ROUTER
+As with WorkoutHistoryTracker and WorkoutService, we also will be using mocking to handle the dependency that we have on the Angular router. But here we will be taking a slightly different approach. We will assign a jasmine spy to a navigate method on our mock. This will be sufficient for our purposes because we only want to make sure that the router's navigate method is being called with the appropriate route (finished) as a parameter. The jasmine spy will allow us to do that as we will see later.
+
+##### CONFIGURING OUR TEST USING TESTBED
+Now that we have our imports and dependencies out of the way, let's get started with the tests themselves. We begin by adding a Jasmine Describe function that will wrap our tests, followed by setting two local variable using let: one for fixture and the other for runner:
+```javascript
+describe('Workout Runner', () =>{
+    let fixture:any;
+    let runner:any;
+```
+Next we'll add a beforeEach function that sets up our test configuration:
+```javascript
+beforeEach( async(() =>{
+    TestBed
+        .configureTestingModule({
+            declarations: [ WorkoutRunnerComponent, SecondsToTimePipe ],
+            providers: [
+                {provide: Router, useClass: MockRouter},
+                {provide: WorkoutHistoryTracker ,useClass:
+                MockWorkoutHistoryTracker},
+                {provide: WorkoutService ,useClass: MockWorkoutService}
+            ],
+            schemas: [ NO_ERRORS_SCHEMA ]
+        })
+        .compileComponents()
+        .then(() => {
+            fixture = TestBed.createComponent(WorkoutRunnerComponent);
+            runner = fixture.componentInstance;
+        });
+}));
+```
+##### async function
+We are using an async function in our beforeEach method because this is required when we call the compileComponents method. This method call is asynchronous and we need to use it here because our component has an external template that is specified in a templateUrl. This method compiles that external template and then inlines it so that it can be used by the createComponent method (which is synchronous) to create our component fixture. This component fixture in turn contains a componentInstance-WorkoutRunner. We then assign both the fixture and the componentInstance to local variables.
+
+The async function we are using creates a special async test zone in which our tests will run. You'll notice that this function is simplified from normal async programming and lets us do things such as using the .then operator without returning a promise.
+
+##### Alternative: Second Synchronous beforeEach
+```javascript
+beforeEach( async(() =>{
+    TestBed
+        .configureTestingModule({
+            declarations: [ WorkoutRunnerComponent, SecondsToTimePipe ],
+            providers: [
+                {provide: Router, useClass: MockRouter},
+                {provide: WorkoutHistoryTracker ,useClass:
+                MockWorkoutHistoryTracker},
+                {provide: WorkoutService ,useClass: MockWorkoutService}
+            ],
+            schemas: [ NO_ERRORS_SCHEMA ]
+        })
+        .compileComponents();
+});
+
+beforeEach( () => {
+    fixture = TestBed.createComponent(WorkoutRunnerComponent);
+    runner = fixture.componentInstance;
+});
+```
+##### Shallow Testing
+```javascript
+schemas: [ NO_ERRORS_SCHEMA ]
+```
+
+This setting allows us to bypass the errors we would otherwise get regarding the custom elements associated with two components that we are using in the component's template: ExerciseDescriptionComponent and VideoPlayerComponent. At this point, we don't want to be testing these components within the test for the WorkoutRunnerComponent. Instead, we should be testing them separately. One thing to be aware of, however, when you use this setting is that it will suppress all schema errors related to elements and attributes in the template of the component under test; so it may hide other errors that you do want to see.
+
+When you set up a test using NO_ERRORS_SCHEMA, you are creating what is called a shallow test, one that does not go deeper than the component you are testing. **Shallow tests allow you to reduce complexities in the templates within the component you are testing and reduce the need for mocking dependencies.**
+
+
+##### Creating the tests for WorkoutRunnerComponent
+To start with, let's add a test case that verifies that the workout starts running once the component is loaded:
+```javascript
+it('should start the workout', () => {
+    expect(runner.workoutTimeRemaining).toEqual(runner.workoutPlan.totalWorkoutDuration());
+    expect(runner.workoutPaused).toBeFalsy();
+});
+``` 
+This test asserts that the total duration of the workout is correct and the workout is in the running state (that is, not paused).
+
+Add calls to ngOnInit and ngDoCheck in your test, like so:
+```javascript
+it('should start the workout', () => {
+    runner.ngOnInit();
+    runner.ngDoCheck();
+    expect(runner.workoutTimeRemaining).toEqual(
+            runner.workoutPlan.totalWorkoutDuration());
+    expect(runner.workoutPaused).toBeFalsy();
+});
+
+ it('should start the first exercise', () => {
+    spyOn(runner, 'startExercise').and.callThrough();
+    runner.ngOnInit();
+    runner.ngDoCheck();
+    expect(runner.currentExerciseIndex).toEqual(0);
+    expect(runner.startExercise).toHaveBeenCalledWith(
+    runner.workoutPlan.exercises[runner.currentExerciseIndex]);
+    expect(runner.currentExercise).toEqual(
+    runner.workoutPlan.exercises[0]);
+});
+```
+##### USING JASMINE SPIES TO VERIFY METHOD INVOCATIONS
+A spy is an object that intercepts every call to the function it is spying on. Once the call is intercepted, it can either return fixed data or pass the call to the actual function being invoked. It also records the call invocation details that can be used later in expect as we did in the preceding test.
+
+There are a couple of things to note here. First, you have to be careful to put the setup for spyOn prior to calling ngOnInit. Otherwise, the spy will not be spying when the startExercise method is called and the method invocation will not be captured.
+
+Second, since the spy is a mock, we will normally not be able to verify anything within the startExercise method. This is because the method itself is being mocked. This means that we cannot actually verify that the currentExercise property has been set, since that is being done inside the mocked method. However, Jasmine allows us to chain the spy with .and.callThrough, which will mean that in addition to tracking the calls to the method, it will delegate to the actual implementation. This then allows us to test that the currentExercise has also been set correctly inside the startExercise method.
+
+##### USING JASMINE SPIES TO VERIFY DEPENDENCIES
+While we just used a spy to verify the call to a method within our class, Jasmine spies are also useful in mocking calls to external dependencies. But why test calls to our external dependencies at all? After all, we are trying to limit our testing to the component itself!
+ 
+So let's create a spy and confirm that WorkoutHistoryTracker started when the workout started.
+
+Add this it block after the preceding one:
+```javascript
+it("should start history tracking", inject([WorkoutHistoryTracker], (tracker: WorkoutHistoryTracker) => {
+     spyOn(tracker, 'startTracking');
+     runner.ngOnInit();
+     runner.ngDoCheck();
+     expect(tracker.startTracking).toHaveBeenCalled();
+ }));
+```
+##### TESTING EVENT EMITTERS
+Examining the code for the WorkoutRunner, we see that it sets up several event emitters that look like the following one for workoutStarted:
+```javascript
+@Output() workoutStarted: EventEmitter<WorkoutPlan> = new EventEmitter<WorkoutPlan>();
+```
+It's actually pretty easy to do. If we remember that an event emitter is an Observable Subject to which we can subscribe, we realize that we can simply subscribe to it in our unit test. Let's revisit our test that verifies that a workout is starting and add the highlighted code to it:
+```javascript
+it('should start the workout', () => {
+    runner.workoutStarted.subscribe((w: any) => {
+      expect(w).toEqual(runner.workoutPlan);
+    });
+    runner.ngOnInit();
+    runner.ngDoCheck();
+    expect(runner.workoutTimeRemaining).toEqual(
+    runner.workoutPlan.totalWorkoutDuration());
+    expect(runner.workoutPaused).toBeFalsy();
+});
+```
+##### fakeAsync()
+The fakeAsync function allows us to run otherwise asynchronous code synchronously. It does this by wrapping the function to be executed in a fakeAsync zone. It then supports using synchronous timers within that zone and also allows us to simulate the asynchronous passage of time with tick().
+
+This makes testing asynchronous functions much easier.  This used to be handled with Jasmine's done function and chaining / handling all the promises.  In some cases you will still need to use the done approach:   
+
+##### TESTING INTERVAL AND TIMEOUT IMPLEMENTATIONS
+One of the interesting challenges for us is to verify that the workout progresses as time elapses. The Workout component uses setInterval to move things forward with time. How can we simulate time without actually waiting?
+
+The answer is the Angular testing library's fakeAsync function, which 
+
+Let's see how we can use the fakeAsync function to test the timeout and interval implementations in our code. Add the following test to workout-runner.spec.ts:
+```javascript
+it('should increase current exercise duration with time', fakeAsync(() => {
+    runner.ngOnInit();
+    runner.ngDoCheck();
+    expect(runner.exerciseRunningDuration).toBe(0);
+    tick(1000);
+    expect(runner.exerciseRunningDuration).toBe(1);
+    tick(1000);
+    expect(runner.exerciseRunningDuration).toBe(2);
+    TestHelper.advanceWorkout(7);
+    expect(runner.exerciseRunningDuration).toBe(10);
+    runner.ngOnDestroy();
+}));
+```
+ 
 ### Unit Testing Services
+##### MOCKING HTTP REQUEST/RESPONSE WITH MOCKBACKEND
+When testing services (or, as a matter of fact, any other Angular construct) that make remote requests, we obviously do not want to make actual requests to a backend to check the behavior.
+
+Create a new file named workout-service.spec.ts and add the following import statements at the top of the file:
+```javascript
+import {addProviders, fakeAsync, inject, tick} from '@angular/core/testing';
+import {BaseRequestOptions, Http, Response, ResponseOptions} from '@angular/http';
+import {MockBackend, MockConnection} from '@angular/http/testing';
+import {WorkoutService} from './workout-service';
+import {WorkoutPlan} from "./model";
+```
+In addition to the imports from the testing module, we are importing both the http module and the MockBackend and MockConnection from the http/testing module.
+
+Once we have the imports in place, we will begin creating the test with the Jasmine describe statement that wraps our tests, and will set several local variables:
+```javascript
+describe('Workout Service', () => {
+    let collectionUrl:string = "...[mongo connnection url]...";
+    let apiKey:string = "...[mongo key]...";
+    let params:string = '?apiKey=' + apiKey;
+    let workoutService:WorkoutService;
+    let mockBackend:MockBackend;
+```
+The next step is set up the providers and dependency injection for our tests. To handle the providers, add the following to the test file:
+```javascript
+beforeEach(() => {
+    addProviders([
+        MockBackend,
+        BaseRequestOptions,
+        {
+            provide: Http,
+            useFactory: (backend:MockBackend,
+            options:BaseRequestOptions) => {
+                return new Http(backend, options);
+            },
+            deps: [MockBackend, BaseRequestOptions]
+        },
+        WorkoutService
+    ])
+});
+```
+Not surprisingly, we are adding MockBackEnd and WorkoutService as providers. At the same time, we are also adding BaseRequestOptions from the http module. And then we are adding a provider for HTTP that uses a factory with the MockEnd and BaseRequestOptions. This factory will then return an Http service that is using the MockBackend. So now we can make an HTTP call from our tests that will not be a remote call, but instead will use the MockBackEnd to fake that call.
+
+To complete the setup for our tests, we add the following to inject dependencies into each of our tests:
+```javascript
+beforeEach(inject([WorkoutService, MockBackend], (service:WorkoutService, backend:MockBackend) => {
+    workoutService = service;
+    mockBackend = backend
+}));
+```
+We will make sure that it returns all workouts when the get Workouts method is called. To do that, add the following test:
+```javascript
+it("should return all workout plans", fakeAsync(() => {
+    let result:any;
+    mockBackend.connections.subscribe((connection:MockConnection) => {
+      expect(connection.request.url).toBe(collectionUrl + "/workouts" +
+      params);
+      let response = new ResponseOptions({body: '[{ "name": "Workout1",
+      "title": "workout1" }, { "name": "Workout1", "title": "workout1"
+      }]'});
+        connection.mockRespond(new Response(response));
+    });
+    workoutService.getWorkouts().subscribe((response:Response) => {
+        result = response;
+    });
+    expect(result.length).toBe(2);
+    expect(result[0] instanceof WorkoutPlan).toBe(true);
+}));
+```
 ### Unit Testing Directives
+No other Angular constructs that we have tested so far do not involve any UI interaction. But directives, as we know, are a different beast. Directives are all about enhancing a component's view and extending the behavior of HTML elements. While testing directives, we cannot ignore the UI connections, and hence directive testing may not strictly qualify as unit testing.
+
+The good thing about directive testing is that its setup process is not as elaborate as that for services or components. The pattern to follow while unit-testing directives is as follows:
+
+1. Take an HTML fragment containing the directive markup.
+2. Compile and link it to a mock component.
+3. Verify that the generated HTML has the required attributes.
+4. Verify the changes if the directive created changes the state.
+
+Similar to our other test files, we add a remote-validator.directive.spec.ts file in the workout builder folder.
+
+Just below the import statements, add the following component definition:
+```javascript
+@Component({ 
+  template: ` 
+  <form> 
+  <input type="text" name="workoutName" id="workout-name" 
+  [(ngModel)]="workoutName" a2beBusyIndicator 
+  a2beRemoteValidator="workoutname" 
+  [validateFunction]="validateWorkoutName"> 
+  </form> 
+  ` 
+}) 
+export class TestComponent { 
+    workoutName: string; 
+ 
+    constructor() { 
+        this.workoutName = '7MinWorkout'; 
+    } 
+    validateWorkoutName = (name: string): Promise<boolean> => { 
+        return Promise.resolve(false); 
+    } 
+} 
+```
+Next, we set up the describe statement for our test suite by adding the following code, which injects  RemoteValidatorDirective into our tests:
+```javascript
+describe('RemoteValidator', () => { 
+    let fixture: any; 
+    let comp: any; 
+    let debug: any; 
+    let input: any; 
+ 
+    beforeEach(async(() => { 
+        TestBed.configureTestingModule({ 
+            imports: [ FormsModule ], 
+            declarations: [ TestComponent, RemoteValidatorDirective ] 
+        }); 
+        fixture = TestBed.createComponent(TestComponent); 
+        comp = fixture.componentInstance; 
+        debug = fixture.debugElement; 
+        input = debug.query(By.css('[name=workoutName]')); 
+    }));  
+```
+
+Now we are ready to write our individual tests. First, we'll write a test to confirm that we have been able to load  RemoteValidatorDirective. So add the following code:
+```javascript
+it("should load the directive without error", fakeAsync(() => {
+    expect(input.attributes.a2beRemoteValidator).toBe('workoutname',  'remote validator directive should be loaded.')
+}));
+```
+What's interesting about this test is that using the debugElement, we have been able to drill-down into the attributes of the input tag in our host component and find our validator, confirming that it has indeed been loaded. 
+
+The first test will make sure that an error is created if remote validation fails (that is, a workout with the same name as the one we are using is found). Add the following code for that test:
+```javascript
+it('should create error if remote validation fails', fakeAsync(() => {
+    spyOn(comp, 'validateWorkoutName').and.callThrough();
+    fixture.detectChanges();
+    input.nativeElement.value = '6MinWorkout';
+    tick();
+    let form: NgForm = debug.children[0].injector.get(NgForm);
+    let control = form.control.get('workoutName');
+    expect(comp.validateWorkoutName).toHaveBeenCalled();
+    expect(control.hasError('workoutname')).toBe(true);
+    expect(control.valid).toBe(false);
+    expect(form.valid).toEqual(false);
+    expect(form.control.valid).toEqual(false);
+    expect(form.control.hasError('workoutname', 
+    ['workoutName'])).toEqual(true);
+}));
+```
+The next test is the mirror opposite of this test and checks for a positive:
+```javascript
+it('should not create error if remote validation succeeds', fakeAsync(() => {
+    spyOn(comp,' validateWorkoutName').and.returnValue(
+    Promise.resolve(true));
+    fixture.detectChanges();
+    input.nativeElement.value = '6MinWorkout';
+    tick();
+    let form: NgForm = debug.children[0].injector.get(NgForm);
+    let control = form.control.get('workoutName');
+    expect(comp.validateWorkoutName).toHaveBeenCalled();
+    expect(control.hasError('workoutname')).toBe(false);
+    expect(control.valid).toBe(true);
+    expect(form.control.valid).toEqual(true);
+    expect(form.valid).toEqual(true);
+    expect(form.control.hasError('workoutname',    ['workoutName'])).toEqual(false);
+}));
+```
+
 ## Getting started with E2E testing

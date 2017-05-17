@@ -26,7 +26,7 @@ ng serve
 >  runs the app in the default port 4200 
 
 ## cli scaffolds the following files and runs npm install.
-![alt text](file-structure-1.jpg "File structure")
+![alt text](fileStructure.png "File structure")
 
 ### List of Commands that cli currently supports.
 

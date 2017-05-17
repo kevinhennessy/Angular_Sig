@@ -160,7 +160,7 @@ We are using Jasmine syntax here:
 * The first parameter of this function is a user-friendly description of the test. 
 * For the second parameter, we pass a lambda (fat arrow) function that will contain our test. 
 * Within the lambda we call Jasmine's **beforeEach** function and use this to
-inject an instance of our pipe.
+create an instance of our pipe.
 
     >Since the beforeEach function runs before every test that is in our
     **describe** function, we can use it for common code that will run in each of our tests. In this case, it is not strictly necessary since there is only one test.

@@ -165,7 +165,15 @@ inject an instance of our pipe.
     >Since the beforeEach function runs before every test that is in our
     **describe** function, we can use it for common code that will run in each of our tests. In this case, it is not strictly necessary since there is only one test.
 
-* Next, we call Jasmine's **it** function and pass it a title, along with three calls to Jasmine's **expect** function (Jasmine's name for assertions). 
+* Next, we call Jasmine's **it** function and pass it a title, along with three calls to Jasmine's **expect** function (Jasmine's name for assertions). The **expect** function uses **matchers** that do a boolean comparision between the actual and expected value. Examples are:
+    ```javascript
+    expect(a).toBe(true);
+    expect(b).not.toBe(null);
+    expect(c).toEqual(12);
+    expect(d).toContain("bar");
+    expect(e).toBeGreaterThan(f)
+    ```
+See [https://jasmine.github.io/2.0/introduction](https://jasmine.github.io/2.0/introduction) for more detail on **expectations** and **matchers**. 
 #### Running our test files
 Now it's time to run our tests using Karma. 
 

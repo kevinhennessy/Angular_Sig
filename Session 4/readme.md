@@ -173,7 +173,7 @@ inject an instance of our pipe.
     expect(d).toContain("bar");
     expect(e).toBeGreaterThan(f)
     ```
-See [https://jasmine.github.io/2.0/introduction](https://jasmine.github.io/2.0/introduction) for more detail on **expectations** and **matchers**. 
+    See [https://jasmine.github.io/2.0/introduction](https://jasmine.github.io/2.0/introduction) for more detail on **expectations** and **matchers**. 
 #### Running our test files
 Now it's time to run our tests using Karma. 
 

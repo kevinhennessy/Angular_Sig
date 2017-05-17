@@ -15,7 +15,7 @@ We will be looking at how to run e2e testing of the Personal Trainer app using a
 ```bash
 npm install -g @angular/cli
 
-ng new trainer-e2e
+ng new trinug-e2e
 
 cd trinug
 

@@ -197,7 +197,7 @@ correct pass/fail results, let's make a change in the test to cause one of the e
 fail. 
 * Change the time in the first expectation to 6 seconds rather than 5, like so:
     ```javascript
-    expect(pipe.transform(5, [])).toEqual('00:00:06');
+    expect(pipe.transform(5)).toEqual('00:00:06');
     ```
 
 * We get the following error message:

@@ -1,0 +1,17 @@
+{
+  "name": "session4",
+  "version": "1.0.0",
+  "description": "Slides for the session can be found at [kevinhennessy.github.io/angular2/Session4](http://kevinhennessy.github.io/angular2/Session4)",
+  "main": "index.js",
+  "dependencies": {
+    "g": "^2.0.1",
+    "lite-server": "^2.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	 "dev": "lite-server"
+  },
+  "author": "",
+  "license": "ISC"
+}

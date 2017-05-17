@@ -634,7 +634,7 @@ ng serve
 >  runs the app in the default port 4200 
 
 ## cli scaffolds the following files and runs npm install.
-![File Structure](file-structure-1.jpg)
+![alt text](file-structure-1.jpg "File structure")
 
 ### List of Commands that cli currently supports.
 
@@ -679,10 +679,10 @@ The test runner will look for files which ends with **\*.spec.ts** in **e2e** fo
 
 
 ## What happens when you run `ng e2e`
-![File Structure](angular-cli-json.jpg)
+![alt text](angular-cli-json.jpg "angular-cli.json")
 
 ## Protractor config file - protractor.conf.js
-![File Structure](protractor-config.jpg)
+![alt text](protractor-config.jpg "protractor config file")
 
 ## Two files for each page.
 
